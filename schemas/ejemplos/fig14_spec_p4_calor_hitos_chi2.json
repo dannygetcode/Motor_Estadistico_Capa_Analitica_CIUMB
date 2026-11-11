@@ -1,0 +1,14 @@
+{
+  "esquema": "ciumb.spec/1.0",
+  "origen": "prompt",
+  "base": null,
+  "metricas": [ { "id": "pct_hitos_atrasados" } ],
+  "dimensiones": [
+    { "id": "facultad" },
+    { "id": "tiempo", "granularidad": "trimestre" }
+  ],
+  "periodo": { "desde": "2026-01-01", "hasta": "2026-09-30" },
+  "analisis": { "metodo": "chi_cuadrado", "variables": [ "facultad", "estado_hito" ], "alfa": 0.05 },
+  "grafico": { "tipo": "mapa_calor", "origen": "prompt" },
+  "alcance": { "rol": "directivo" }
+}
