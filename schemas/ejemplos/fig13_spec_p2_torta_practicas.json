@@ -1,0 +1,11 @@
+{
+  "esquema": "ciumb.spec/1.0",
+  "origen": "prompt",
+  "base": null,
+  "metricas": [ { "id": "practicas", "agregacion": "conteo" } ],
+  "dimensiones": [ { "id": "programa" } ],
+  "filtros": [ { "campo": "periodo_academico", "op": "=", "valor": "2026-2" } ],
+  "analisis": { "metodo": "frecuencias", "relativas": true },
+  "grafico": { "tipo": "torta", "origen": "prompt", "max_sectores": 6 },
+  "alcance": { "rol": "coordinador", "facultad": "Ingeniería" }
+}

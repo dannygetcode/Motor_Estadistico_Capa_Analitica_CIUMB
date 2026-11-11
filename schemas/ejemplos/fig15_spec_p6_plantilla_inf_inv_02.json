@@ -1,0 +1,11 @@
+{
+  "esquema": "ciumb.spec/1.0",
+  "origen": "plantilla_base",
+  "base": "INF-INV-02",
+  "metricas": [ { "id": "pct_ejecucion" } ],
+  "filtros": [ { "campo": "linea_investigacion", "op": "=", "valor": "Analítica de datos" } ],
+  "periodo": { "desde": "2026-01-01", "hasta": "2026-10-31" },
+  "analisis": { "metodo": "descriptiva", "atipicos": { "metodo": "RIC", "k": 1.5 } },
+  "grafico": { "tipo": "histograma", "origen": "prompt", "reemplaza": "caja" },
+  "alcance": { "rol": "coordinador", "facultad": "Ingeniería" }
+}
