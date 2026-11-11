@@ -211,7 +211,15 @@ El validador de cifras extrae todos los números de tu narrativa y los compara c
    `"tecnica": "RIC"`. ¿Lo unificamos?
 6. **Indicadores por categoría:** usamos `grupo` (general) y `mes` (como en la Figura 12). ¿Te alcanza para
    redactar un cruce de dos dimensiones?
-7. **Formato de la narrativa que devuelves.** Propuesta mínima: `{ "secciones": [ { "id", "texto" } ] }`, con los
-   mismos `id` de sección del contrato. Este formato lo defines tú.
-8. **Formato de la respuesta a una spec no válida** (lista de problemas con código, campo y mensaje) y de la
-   petición de regeneración (lista de cifras que fallaron). Te los envío cuando estén implementados.
+7. **Formato de la narrativa que devuelves.** Propuesta mínima, ya implementada del lado analítico:
+   `{ "secciones": [ { "id", "texto" } ] }`, con los mismos `id` de sección del contrato. Este formato lo
+   defines tú; si prefieres otro, se cambia.
+8. **Respuesta a una spec no válida.** Ya está implementada: `{ "estado", "problemas": [ { "codigo", "paso",
+   "campo", "mensaje", "para", "opciones" } ] }`. `para` vale `"ia"` cuando el error es de forma y tu capa puede
+   corregir la spec sin molestar al usuario, y `"usuario"` cuando hay que repreguntar; `opciones` trae los
+   códigos que sí sirven. ¿Te alcanza para armar la repregunta?
+9. **Petición de regeneración.** Tu capa recibe la narrativa anterior y la lista de cifras que fallaron:
+   `[ { "seccion", "texto", "valor", "contexto" } ]` (`texto` es la cifra tal como la escribiste y `contexto`
+   unos 30 caracteres a cada lado). Máximo dos regeneraciones.
+10. **Parámetros del análisis en el texto.** El nivel de confianza (95 %) o el alfa (0,05) no viajan como
+    indicadores; el validador los admite porque los toma de la spec. ¿Los necesitas dentro del contrato?

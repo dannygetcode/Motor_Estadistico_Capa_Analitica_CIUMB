@@ -197,6 +197,28 @@ D-09 a D-17 las tomó la sesión 1 con la opción mínima (PROMPT_1). La lista o
 - El seudónimo de una persona es SHA-256 de `sal:id` (`ciumb_analitica.seudonimo`); la sal se lee de
   `SAL_SEUDONIMIZACION` y debe tener al menos 16 caracteres.
 
+### D-23 · Reglas del validador de cifras (2026-11-11)
+- La tolerancia de media unidad del último decimal mostrado cubre el redondeo a 0, 1 y 2 decimales del paso 3
+  y también a más decimales (un valor p de 0,0312 se puede escribir 0,031). La media unidad exacta se acepta en
+  ambos sentidos (0,125 como 0,12 o 0,13). Truncar no es redondear: 412 no vale para 412,6.
+- Año = entero de cuatro dígitos entre 1900 y 2100, sin signo, sin punto de miles y sin `%`. Riesgo aceptado:
+  un conteo que valga, por ejemplo, 2025 y se escriba sin punto de miles se toma por año y no se verifica; la
+  plantilla siempre escribe el punto de miles (2.025).
+- Un número con `%` solo coincide con `variacion_pct`, con valores cuya unidad es un porcentaje o con una
+  proporción (`unidad: "proporcion"`, `valor_p`) multiplicada por cien. Una proporción escrita como 13,7 sin
+  `%` se rechaza.
+- Un valor negativo se puede escribir sin signo («cayó 5,2 %»). Lo contrario no.
+- También se admiten los números escritos en los textos del contrato (advertencias, método, etiquetas, ids) y
+  los parámetros del análisis que pase quien orquesta (`extra`: alfa, nivel de confianza, k).
+- Una cifra que la IA calcule por su cuenta (una resta, una suma) es discrepancia aunque sea correcta: si hace
+  falta, debe venir en el contrato.
+- La regeneración es una función inyectada; este repositorio no llama a ningún LLM. Si la función falla o
+  devuelve nada, se pasa a la plantilla (modo degradado, RF-11). La plantilla también se valida: si cita una
+  cifra ajena al contrato es un defecto del servicio (`PlantillaInvalida`).
+- `rpt_validacion` guarda las cifras del último texto de la IA evaluado; el detalle por intento queda en
+  `ResultadoFinal.intentos`.
+- Formato de la narrativa (BORRADOR, lo define la capa de IA): `{"secciones": [{"id", "texto"}]}`.
+
 ## Lista original de contradicciones y huecos (resueltos arriba)
 1. **dim_tiempo:** la Figura 7 y la Tabla 16 usan `día`/`año`; la Figura 8 usa `anio` y agrega `nombre_mes`.
    Convención del repo (sin tildes): `anio`, `dia`.

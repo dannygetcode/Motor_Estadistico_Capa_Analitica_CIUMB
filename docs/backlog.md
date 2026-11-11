@@ -23,7 +23,7 @@ Estados: [x] hecho · [~] en curso · [ ] pendiente. El detalle de cada historia
 ## Sprint 3 (30 nov–11 dic): ML, contrato, validador, exportación
 - [ ] ML: pronóstico, atípicos, segmentación.
 - [ ] Empaquetador del contrato y filtro de PII.
-- [ ] Validador de cifras (6 pasos) con regeneraciones y plantilla.
+- [x] Validador de cifras (6 pasos) con regeneraciones y plantilla sin IA por defecto (adelantado en la sesión 1).
 - [ ] Exportación PDF, DOCX, XLSX, HTML y CSV.
 
 ## Sprint 4 (14–19 dic): evaluación
