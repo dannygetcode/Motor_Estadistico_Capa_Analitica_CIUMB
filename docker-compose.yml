@@ -1,0 +1,22 @@
+# PostgreSQL de desarrollo con datos sintéticos. El motor real del CIUMB no está confirmado.
+services:
+  db:
+    image: postgres:16
+    container_name: ciumb_db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ciumb}
+      POSTGRES_USER: ${POSTGRES_USER:-ciumb_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD en .env}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - datos_db:/var/lib/postgresql/data
+      - ./datos_sinteticos/ddl.sql:/docker-entrypoint-initdb.d/01_ddl.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  datos_db:
