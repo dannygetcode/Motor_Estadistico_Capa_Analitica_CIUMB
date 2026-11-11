@@ -376,7 +376,7 @@ def test_la_plantilla_de_la_figura_12_cita_solo_cifras_del_contrato():
 
 
 def test_la_plantilla_siempre_pasa_el_validador_con_contratos_aleatorios():
-    rng = random.Random(20261111)
+    rng = random.Random(20261111)  # noqa: S311 - semilla fija para una prueba reproducible
     unidades = [None, "%", "proporcion", "COP", "dias", "millones COP"]
     for _ in range(300):
         indicadores = []

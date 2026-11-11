@@ -1,36 +1,84 @@
 # Relevo entre sesiones
 
-## Estado al cierre de la sesión 0 (2026-11-11, Opus · rama `chore/sesion-0-preparacion`)
-Hecho:
-- `docs/diseno/`: diseño dividido en 66 secciones + `00_indice.md` + figuras con descripción. Verificación de
-  palabras: 17 547 en el docx y 17 547 en los .md (0 % de diferencia). Se regenera con
-  `uv run --no-project --with python-docx python herramientas/dividir_diseno.py`.
-- `schemas/ejemplos/`: JSON de las Figuras 12–15 (sus comentarios están en `README.md`). Todavía no hay JSON Schema.
-- Esqueleto: `pyproject.toml` (uv, Python 3.12), ruff, pytest, pre-commit, `docker-compose.yml` (PostgreSQL 16),
-  `.env.example`, paquetes vacíos de `src/ciumb_analitica/` y `GET /salud` con su prueba.
-- `datos_sinteticos/`: `ddl.sql` (esquema `ciumb`, modelo inferido, provisional) y `generar.py`
-  (semilla 20261111, 2019–2026, 13 claves de defecto con conteos exactos en `defectos.md`). Verificado en
-  PostgreSQL: los conteos de filas y de defectos coinciden.
-- `docs/decisiones.md`: D-01 a D-05 y 12 contradicciones o huecos del diseño pendientes de decidir.
+## Estado al cierre de la sesión 1 (2026-11-11, Fable · PROMPT_1)
+Ramas encadenadas, sin fusionar a `main` (lo decide Daniel): `feat/t1-interfaces-frontera` →
+`feat/t2-dw-semantica` → `feat/t3-validador-spec` → `feat/t4-compilador` → `feat/t5-validador-cifras` (la última
+contiene todo). `uv run pytest`: 487 pruebas en verde. `uv run ruff check .`: limpio.
 
-Pruebas: `uv run pytest` da 9 pruebas en verde. `uv run ruff check .` sale limpio.
+Hecho (tareas 1 a 5 de PROMPT_1):
+1. **Interfaces de frontera** — `spec/modelos.py`, `contrato/modelos.py`, `contrato/pii.py`, JSON Schema en
+   `schemas/*.schema.json` (`uv run python -m ciumb_analitica.exportar_esquemas`), fixtures P1–P10 en
+   `schemas/fixtures/` y rechazados en `schemas/fixtures/rechazados/`. **BORRADOR** hasta que Laura revise
+   `docs/interfaz_capa_ia.md`.
+2. **DW y capa semántica** — `dw/esquema.py`, `trazabilidad/esquema.py` (fuente del DDL),
+   `sql/ana_rpt_postgresql.sql` (generado con `uv run python -m ciumb_analitica.dw.ddl`; verificado en
+   PostgreSQL 16), `dw/tiempo.py`, `semantica/` (modelos, gramática de expresiones, semilla con 31 métricas,
+   18 dimensiones y 8 plantillas, `almacen.sembrar` / `leer_capa`).
+3. **Validador de specs** — `spec/validador.py` (`validar` y `revisar_datos`), `spec/resultado.py`
+   (`SpecResuelta`, códigos de problema y aviso, umbrales), `spec/convenciones.py` (nombres de columnas).
+4. **Compilador** — `compilador/compilador.py` (`compilar`, `ejecutar`, `huella_datos`), `seudonimo.py`.
+   SQL de P1–P9 verificado con EXPLAIN en PostgreSQL 16.
+5. **Validador de cifras** — `validador_cifras/` (`extraccion`, `validador`, `plantilla`).
+
+Decisiones: D-06 a D-23 en `docs/decisiones.md`.
+
+## Pendiente de la sesión 1: tarea 6 (relevo para Opus) — NO se hizo
+Se acabó la cuota antes de empezar. Falta, en este orden:
+- Firmas con tipos y docstrings (entradas, salidas, advertencias, tabla del diseño) en `motor/`, `ml/`,
+  `graficos/`, `contrato/` (empaquetador), `etl/` y `exportacion/`. Hoy esos paquetes están vacíos.
+- Pruebas `xfail` («pendiente de implementar») con valores de referencia de SciPy/statsmodels.
+- Completar esta lista de tareas con su prueba, su OE y su RF.
+
+## Siguientes tareas (una por historia)
+| # | Historia | Paquete | OE / RF | Parte de |
+|---|---|---|---|---|
+| 1 | Tarea 6 de PROMPT_1 (firmas + xfail) | varios | — | lo anterior |
+| 2 | Vistas de extracción sobre `ciumb` | `fuentes/` | OE4 · RNF-06 | `datos_sinteticos/ddl.sql`, Tabla 13 |
+| 3 | ETL: seudonimización, calidad, carga de dimensiones, hechos y agregados | `etl/` | OE4 · RNF-05/06 | `dw/esquema.py`, `seudonimo.py`, D-11 a D-14, D-17 |
+| 4 | Descriptiva, series e inferencia | `motor/` | OE1 · RF-02 a RF-04 | Tabla 8; emite `CHI2_ESPERADO_BAJO` |
+| 5 | Gráficos (6 tipos) | `graficos/` | OE3 · RF-15 | `SpecResuelta.grafico`, `revisar_datos` |
+| 6 | Pronóstico, atípicos, segmentación | `ml/` | OE2 · RF-05, RF-06 | Tabla 8 |
+| 7 | Empaquetador del contrato | `contrato/` | OE4 · DA-04 | debe terminar en `cargar_contrato` |
+| 8 | Exportación PDF/DOCX/XLSX/HTML/CSV | `exportacion/` | OE3 · RF-16 | `validador_cifras.plantilla` |
+| 9 | Rutas (`POST /informes`, `GET /semantica`, `GET /informes/catalogo`) y trazabilidad `rpt_` | `api/`, `trazabilidad/` | RF-12, RF-19 | `CapaSemantica.publicar`, `leer_plantillas` |
+
+Flujo que une lo hecho: `validar(spec, capa, hoy)` → `compilar(spec_resuelta, capa, sal)` → `ejecutar(con, plan)`
+→ `revisar_datos(spec_resuelta, datos)` → motor/gráficos → empaquetador → `cargar_contrato` → (capa de IA) →
+`validar_con_regeneracion(narrativa, contrato, regenerar, plantilla_por_defecto, extra)` → exportación.
+
+## Qué NO tocar sin preguntar a Daniel
+`spec/`, `contrato/modelos.py`, `contrato/pii.py`, `compilador/`, `validador_cifras/`, `semantica/expresion.py`,
+`schemas/`, `dw/esquema.py`, `trazabilidad/esquema.py`. Si una prueba existente falla, se arregla el código nuevo,
+no la prueba. Cambiar el contrato exige subir su versión una vez Laura lo apruebe.
+
+## Trampas conocidas
+- El motor recibe un DataFrame por consulta. P8 trae tres (`principal:<tabla>`), que hay que unir por la
+  dimensión común; el chi-cuadrado lee la consulta `prueba`, no la `principal` (D-06, D-22).
+- Una razón nunca se promedia: usar las columnas `<metrica>__num` y `<metrica>__den` para cualquier total.
+- Las columnas que empiezan por `_` (`_n_personas`, `_persona`, `_registro`) nunca se exportan ni van al
+  contrato. Llamar siempre a `revisar_datos` antes de calcular: es quien suprime los grupos < 5.
+- Las dimensiones con `viaja_a_ia = False` (empresa, macroproyecto) no pueden aparecer en `grupo` del contrato.
+- Si `SpecResuelta.periodo` es `None` (filtro temporal), el periodo del contrato sale del rango de los datos.
+- Los parámetros del análisis (alfa, nivel de confianza, k) se pasan al validador de cifras en `extra`.
+- Instantáneas mensuales: el ETL debe cargar un corte por fin de mes; `agg_proyecto_linea_mes` debe coincidir
+  con `hecho_proyecto` y `agg_facturacion_mes` usa el primer día del mes de la factura.
+- `dim_linea_programa` necesita una fila de nivel programa por programa (D-13).
+- Validar specs siempre con `cargar_especificacion` / `validar`, no con `Especificacion.model_validate`.
+- En la terminal de esta máquina fallan los heredocs con comillas simples: escribir los archivos con la
+  herramienta de escritura. Un `cd` a una subcarpeta puede cambiar el directorio de la sesión.
+- En el PostgreSQL de desarrollo quedó creado el rol `ciumb_lector` (sin acceso de inicio de sesión). El volumen
+  actual no tiene `ana_` ni `rpt_`: aplicar `sql/ana_rpt_postgresql.sql` o recrear con `docker compose down -v`.
+- WeasyPrint en Windows necesita GTK; no se ha probado. Docker Desktop no arranca solo.
+
+## Pendientes de otras personas
+- **Laura:** revisar `docs/interfaz_capa_ia.md` (10 puntos por confirmar).
+- **Daniel:** lista de las 18 plantillas base (hay 8 sembradas).
+- **Integración (Juan Stiven, Manuel):** forma de `alcance` e identificación del tutor; qué ve cada rol (D-20);
+  tutor empresarial (D-14); carga de todos los consultores (D-12); motor de base de datos real.
 
 ## Cómo levantar el entorno
 1. `uv sync`
-2. `cp .env.example .env` y poner una contraseña en `POSTGRES_PASSWORD` y en `DATABASE_URL_ADMIN`.
-3. `docker compose up -d --wait db`. El DDL se aplica solo cuando se crea el volumen; para reaplicarlo:
-   `docker compose down -v`.
-4. Cargar las variables de `.env` en el shell y correr `uv run python -m datos_sinteticos.generar`
-   (o `--sql archivo.sql` para volcar INSERT, o `--resumen` para ver solo los conteos).
-
-## Siguiente tarea (sesión 1, PROMPT_1)
-Interfaces de frontera: modelos Pydantic de `ciumb.spec/1.0` (Tabla 20, `4.4.2`) y del contrato 2.0.0
-(`4.4.3`, Figura 12) con JSON Schema exportado a `schemas/`, y fixtures P1–P10 (Tabla 22, `4.4.4`).
-Antes de empezar, decidir los puntos 7, 8 y 10 de `docs/decisiones.md`, que afectan esos modelos.
-
-## Trampas conocidas
-- Todavía no existen en el DDL el usuario de solo lectura (`ciumb_lector`) ni el esquema `ana_`.
-- WeasyPrint en Windows necesita GTK para renderizar; se instala, pero no se ha probado (Sprint 3).
-- En esta máquina, un `cd` a una subcarpeta puede cambiar el directorio de trabajo de la sesión: usar rutas
-  relativas a la raíz.
-- Docker Desktop no arranca solo; si `docker info` falla, hay que abrirlo antes del `docker compose`.
+2. `cp .env.example .env` y completar contraseñas y `SAL_SEUDONIMIZACION` (16 caracteres o más).
+3. `docker compose up -d --wait db` (aplica `datos_sinteticos/ddl.sql` y `sql/ana_rpt_postgresql.sql` solo al
+   crear el volumen).
+4. `uv run python -m datos_sinteticos.generar`
