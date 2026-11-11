@@ -67,8 +67,8 @@ D-09 a D-17 las tomó la sesión 1 con la opción mínima (PROMPT_1). La lista o
   se usa el último periodo cerrado.
 - Decisión: `periodo` es opcional. Un filtro sobre una dimensión temporal cuenta como periodo. Si no hay
   ninguno de los dos, el validador aplica el último periodo cerrado y lo declara en el anexo.
-- Consecuencia: la spec resuelta (la que se compila y se huella) siempre tiene periodo explícito; el
-  periodo aplicado por defecto viaja como aviso para el anexo.
+- Consecuencia: el periodo aplicado por defecto viaja como aviso para el anexo. Si el periodo lo da un filtro
+  temporal, la spec resuelta lleva `periodo = null` (ver D-21).
 
 ### D-09 · Nombres de `dim_tiempo` (punto 1)
 - Decisión: columnas sin tildes, `dia` y `anio` (convención del repo), y se incluye `nombre_mes` (Figura 8, la
@@ -147,6 +147,38 @@ D-09 a D-17 las tomó la sesión 1 con la opción mínima (PROMPT_1). La lista o
   provisionales. El diseño habla de 18 y no las enumera: las otras 10 quedan pendientes de la lista de Daniel.
   La plantilla INF-INV-02 usa histograma: el diagrama de caja que menciona la Figura 15 no es uno de los seis
   tipos de RF-15.
+
+### D-20 · Alcance por rol: si no se puede aplicar, se niega (2026-11-11)
+- Contexto: RF-21 dice que un coordinador ve su facultad y un tutor las prácticas a su cargo, pero varios hechos
+  no tienen facultad ni persona en la matriz de bus (convenios, consultorías, hitos, accesos).
+- Decisión: directivo y administrador no tienen restricción. Coordinador: solo métricas que se registran por
+  facultad; se agrega `facultad = alcance.facultad`. Tutor: solo `hecho_practica`, filtrado por su seudónimo.
+  Consultor: solo `hecho_consultoria`, filtrado por su seudónimo (consultor líder, D-12). Si el alcance no se
+  puede aplicar a una métrica, la solicitud queda fuera de alcance (`ALCANCE_NO_APLICABLE`); nunca se entrega sin
+  restringir. Un filtro del prompt que pida otra facultad se rechaza (`ALCANCE_EXCEDIDO`).
+- Pregunta para integración: qué módulos ve cada rol (`rol.alcance_modulos`) y si el coordinador debe ver
+  convenios y consultorías de todo el centro. Hoy no los ve.
+
+### D-21 · Reglas de resolución del validador de specs (2026-11-11)
+- Tres estados y a quién va cada problema: un error de forma (paso 1) es `corregible` con `para: "ia"` (la
+  capa de IA corrige la spec); lo que falta o es ambiguo es `corregible` con `para: "usuario"`; lo que la capa
+  semántica no tiene, un cruce que la matriz de bus no permite, datos personales o alcance es
+  `fuera_de_alcance`.
+- Un código que no existe nunca se reemplaza por el más parecido: si hay parecidos (similitud >= 0,75) se
+  devuelven como opciones (`METRICA_PARECIDA`); si no, `METRICA_INEXISTENTE`.
+- El validador recibe la fecha de referencia (`hoy`) como parámetro. Último periodo cerrado = del 1 de enero
+  del año del último mes calendario completo hasta el fin de ese mes. Un `periodo.hasta` posterior se recorta
+  con aviso (`PERIODO_RECORTADO`).
+- Si el periodo lo da un filtro temporal (D-08), la spec resuelta lleva `periodo = null` y la consulta se
+  acota solo con el filtro; el empaquetador del contrato toma `desde` y `hasta` del rango real de los datos.
+- Nivel de lectura: `registro` (una fila por proyecto, práctica o consultoría) para descriptiva y atípicos sobre
+  medidas, t de Student, Mann-Whitney, correlación sin dimensiones, mediana e histograma; `agregado` en lo
+  demás. La mediana se calcula con pandas porque no es portable en SQL.
+- `revisar_datos` aplica después de la consulta lo que depende de los datos: supresión de grupos con menos de
+  cinco personas distintas, pronóstico con menos de 12 puntos, histograma con menos de 20 observaciones, torta
+  con más de seis sectores o con negativos y mapa de calor de menos de 3 x 3.
+- Sin tipo pedido y con dos dimensiones se recomiendan barras agrupadas; si el cruce real tiene al menos
+  3 x 3 y más de 30 celdas, pasa a mapa de calor (así se concreta «muchas celdas» de la Tabla 21).
 
 ## Lista original de contradicciones y huecos (resueltos arriba)
 1. **dim_tiempo:** la Figura 7 y la Tabla 16 usan `día`/`año`; la Figura 8 usa `anio` y agrega `nombre_mes`.
