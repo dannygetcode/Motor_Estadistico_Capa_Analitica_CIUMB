@@ -10,8 +10,9 @@ Estados: [x] hecho · [~] en curso · [ ] pendiente. El detalle de cada historia
 
 ## Sprint 2 (16–27 nov): vistas, ETL, semántica, compilador, motor, gráficos
 - [x] Modelos `ciumb.spec/1.0` y contrato 2.0.0 (Pydantic + JSON Schema), filtro de PII y fixtures P1–P10. BORRADOR hasta la revisión de la capa de IA (`docs/interfaz_capa_ia.md`).
-- [ ] DDL de `ana_` (Tablas 15–17) y de `rpt_` (Figura 6, Tabla 12); usuario de solo lectura.
-- [ ] Seed de la capa semántica (rpt_metrica, rpt_dimension, rpt_compatibilidad).
+- [x] DDL de `ana_` (Tablas 15–17) y de `rpt_` (Figura 6, Tabla 12); usuario de solo lectura. Verificado en PostgreSQL 16.
+- [x] Seed de la capa semántica (rpt_metrica, rpt_dimension, rpt_compatibilidad) y 8 plantillas base.
+- [ ] Las otras 10 plantillas base (falta la lista de las 18 priorizadas).
 - [ ] Validador de especificación (7 pasos).
 - [ ] Compilador de spec a SQL parametrizado con huella determinista.
 - [ ] Vistas de extracción de `fuentes/` sobre el esquema `ciumb`.

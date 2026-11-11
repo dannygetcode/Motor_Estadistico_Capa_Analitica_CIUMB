@@ -119,6 +119,35 @@ D-09 a D-17 las tomó la sesión 1 con la opción mínima (PROMPT_1). La lista o
 - Decisión: por tabla. Si la vista de extracción expone `fecha_modificacion`, se filtra por ella; si no, se
   compara la huella de cada fila con la de la carga anterior (4.3.2). Confirma D-04.
 
+### D-18 · Nombres de los esquemas y agnosticismo del motor (2026-11-11)
+- Decisión: los esquemas se llaman literalmente `ana_` y `rpt_` (Figura 10: `ana_.agg_facturacion_mes`); las
+  tablas de `rpt_` conservan el prefijo de la Figura 6 (`rpt_.rpt_metrica`). La fuente de verdad del DDL son los
+  metadatos de SQLAlchemy (`dw/esquema.py`, `trazabilidad/esquema.py`); `sql/ana_rpt_postgresql.sql` se genera.
+- `sk_fecha` es un entero AAAAMMDD. Los indicadores (`finalizada`, `a_tiempo`, `renovado`, `docs_completos`) son
+  enteros 0/1 para poder sumarlos en cualquier motor.
+- Tablas que el diseño menciona sin detallar y se agregaron: `agg_facturacion_mes` (Figura 10),
+  `agg_proyecto_linea_mes` (4.3.2), `etl_ejecucion`, `etl_marca_calidad` y `etl_huella_fila` (4.3.2, D-17).
+  Cada hecho lleva `marca_calidad`. `hecho_practica` lleva `seudonimo_estudiante` para contar personas.
+- Consecuencia: si el motor del CIUMB no admite esquemas (MySQL los trata como bases), se cambia el nombre en
+  un solo lugar (`ESQUEMA_ANA`, `ESQUEMA_RPT`); las pruebas usan SQLite con los esquemas traducidos a ninguno.
+
+### D-19 · Extensiones de la capa semántica frente a la Figura 6 (2026-11-11)
+- `rpt_metrica.expresion_sql` no es SQL libre: es una gramática cerrada (`*`, `columna`, `[100 *] num / den`)
+  cuyos nombres se resuelven contra las tablas de `ana_`. Un registro nuevo (RF-22) no puede inyectar SQL.
+- Columnas agregadas a `rpt_metrica`: `descripcion`, `agregacion_defecto`, `columna_personas` (qué columna cuenta
+  personas, para suprimir grupos < 5) y `agregados_json` (agregados precalculados alternos).
+- Columnas agregadas a `rpt_dimension`: `descripcion`, `viaja_a_ia` (empresa y macroproyecto no viajan) y
+  `binaria_de_metrica`.
+- `estado_hito` (P4) es una dimensión binaria derivada de la razón `pct_hitos_atrasados`: sus dos categorías
+  (atrasado, a tiempo) salen de los componentes de la razón (num, den - num) agrupados por la otra variable.
+  Así el chi-cuadrado de P4 se responde desde `hecho_proyecto`, que sí tiene facultad (ver D-11).
+- La compatibilidad no se escribe a mano: se deriva de las claves foráneas de `ana_` (matriz de bus) menos las
+  exclusiones declaradas (D-13).
+- Plantillas base: se sembraron 8 (INF-INV-01, INF-INV-02, INF-COS-02, INF-EMP-03, INF-TRA-04 a 07), con nombres
+  provisionales. El diseño habla de 18 y no las enumera: las otras 10 quedan pendientes de la lista de Daniel.
+  La plantilla INF-INV-02 usa histograma: el diagrama de caja que menciona la Figura 15 no es uno de los seis
+  tipos de RF-15.
+
 ## Lista original de contradicciones y huecos (resueltos arriba)
 1. **dim_tiempo:** la Figura 7 y la Tabla 16 usan `día`/`año`; la Figura 8 usa `anio` y agrega `nombre_mes`.
    Convención del repo (sin tildes): `anio`, `dia`.

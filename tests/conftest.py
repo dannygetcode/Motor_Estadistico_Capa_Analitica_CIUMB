@@ -5,6 +5,10 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+from sqlalchemy import create_engine
+from sqlalchemy.pool import StaticPool
+
 RAIZ = Path(__file__).resolve().parents[1]
 DIR_SCHEMAS = RAIZ / "schemas"
 DIR_FIXTURES = DIR_SCHEMAS / "fixtures"
@@ -25,3 +29,21 @@ def fixture_prompt(nombre: str) -> dict:
 def rechazados(interfaz: str) -> list[tuple[str, dict]]:
     """Ejemplos rechazados de `schemas/fixtures/rechazados/` para 'spec' o 'contrato'."""
     return [(r.stem, leer_json(r)) for r in sorted((DIR_FIXTURES / "rechazados").glob(f"{interfaz}_*.json"))]
+
+
+# --- Base de datos de prueba: SQLite en memoria con los esquemas ana_ y rpt_ ------------------------------------
+
+SIN_ESQUEMAS = {"ana_": None, "rpt_": None}
+
+
+@pytest.fixture
+def motor_bd():
+    """Motor SQLite en memoria con todas las tablas de `ana_` y `rpt_` (los esquemas se traducen a ninguno)."""
+    from ciumb_analitica.dw.esquema import metadatos_ana
+    from ciumb_analitica.trazabilidad.esquema import metadatos_rpt
+
+    motor = create_engine("sqlite://", poolclass=StaticPool).execution_options(schema_translate_map=SIN_ESQUEMAS)
+    metadatos_ana.create_all(motor)
+    metadatos_rpt.create_all(motor)
+    yield motor
+    motor.dispose()
