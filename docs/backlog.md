@@ -14,7 +14,7 @@ Estados: [x] hecho · [~] en curso · [ ] pendiente. El detalle de cada historia
 - [x] Seed de la capa semántica (rpt_metrica, rpt_dimension, rpt_compatibilidad) y 8 plantillas base.
 - [ ] Las otras 10 plantillas base (falta la lista de las 18 priorizadas).
 - [x] Validador de especificación (7 pasos) y revisión posterior a los datos (supresión < 5, muestra, gráfico).
-- [ ] Compilador de spec a SQL parametrizado con huella determinista.
+- [x] Compilador de spec a SQL parametrizado con huella determinista (razones, agregados, instantáneas, alcance). SQL de P1–P9 verificado con EXPLAIN en PostgreSQL 16.
 - [ ] Vistas de extracción de `fuentes/` sobre el esquema `ciumb`.
 - [ ] ETL: extracción incremental, seudonimización, reglas de calidad, carga de dimensiones y hechos.
 - [ ] Motor estadístico (descriptiva, series, inferencia; Tabla 8).

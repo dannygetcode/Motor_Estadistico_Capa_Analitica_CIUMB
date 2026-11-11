@@ -180,6 +180,23 @@ D-09 a D-17 las tomó la sesión 1 con la opción mínima (PROMPT_1). La lista o
 - Sin tipo pedido y con dos dimensiones se recomiendan barras agrupadas; si el cruce real tiene al menos
   3 x 3 y más de 30 celdas, pasa a mapa de calor (así se concreta «muchas celdas» de la Tabla 21).
 
+### D-22 · Reglas del compilador de consultas (2026-11-11)
+- Instantáneas periódicas (Tabla 17): una medida no se suma entre fechas de corte. Si la consulta agrupa por
+  tiempo se toma el último corte de cada periodo (mes, trimestre, semestre o año); si no, el último corte del
+  periodo completo. Así se lee «en la última fecha de corte del periodo» de 4.3.2.
+- El periodo se filtra sobre la clave de fecha del hecho (`sk_fecha`, entero AAAAMMDD). Sin periodo (filtro
+  temporal, D-08) se agrega `sk_fecha <= corte` para no leer meses sin cerrar.
+- Un plan puede tener varias consultas: una `principal` por hecho o agregado (P8 usa tres, que el motor une
+  por la dimensión común) y una `prueba` con la tabla de contingencia del chi-cuadrado (D-06).
+- Las dimensiones se unen con LEFT JOIN: un registro sin línea o sin empresa queda en un grupo nulo en vez de
+  desaparecer del conteo.
+- Los registros con `marca_calidad` se incluyen en los cálculos (el diseño dice que no se descartan). Si el
+  CIUMB prefiere excluirlos de los indicadores, es un filtro más en el compilador.
+- Huella del plan = SHA-256 del SQL compilado con el dialecto genérico más los parámetros; no depende del
+  motor de base de datos. `huella_datos` = SHA-256 de los datos devueltos.
+- El seudónimo de una persona es SHA-256 de `sal:id` (`ciumb_analitica.seudonimo`); la sal se lee de
+  `SAL_SEUDONIMIZACION` y debe tener al menos 16 caracteres.
+
 ## Lista original de contradicciones y huecos (resueltos arriba)
 1. **dim_tiempo:** la Figura 7 y la Tabla 16 usan `día`/`año`; la Figura 8 usa `anio` y agrega `nombre_mes`.
    Convención del repo (sin tildes): `anio`, `dia`.
