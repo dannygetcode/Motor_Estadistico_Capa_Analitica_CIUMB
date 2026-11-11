@@ -13,7 +13,7 @@ Hecho:
   PostgreSQL: los conteos de filas y de defectos coinciden.
 - `docs/decisiones.md`: D-01 a D-05 y 12 contradicciones o huecos del diseño pendientes de decidir.
 
-Pruebas: `uv run pytest` da 10 pruebas en verde. `uv run ruff check .` sale limpio.
+Pruebas: `uv run pytest` da 9 pruebas en verde. `uv run ruff check .` sale limpio.
 
 ## Cómo levantar el entorno
 1. `uv sync`
