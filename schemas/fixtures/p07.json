@@ -1,0 +1,49 @@
+{
+  "id": "P7",
+  "prompt": "¿Cuántas prácticas habrá en los próximos dos semestres?",
+  "fecha_referencia": "2026-11-05",
+  "spec": {
+    "esquema": "ciumb.spec/1.0",
+    "origen": "prompt",
+    "base": null,
+    "metricas": [
+      {
+        "id": "practicas",
+        "agregacion": "conteo"
+      }
+    ],
+    "dimensiones": [
+      {
+        "id": "tiempo",
+        "granularidad": "semestre"
+      }
+    ],
+    "periodo": {
+      "desde": "2019-01-01",
+      "hasta": "2026-06-30"
+    },
+    "analisis": {
+      "metodo": "pronostico",
+      "tecnica": "holt",
+      "horizonte": 2,
+      "nivel_confianza": 0.95
+    },
+    "alcance": {
+      "rol": "directivo"
+    }
+  },
+  "esperado": {
+    "resultado": "valida",
+    "grafico_final": "lineas",
+    "grafico_origen": "recomendado",
+    "avisos": [],
+    "avisos_con_datos": [
+      {
+        "codigo": "PRONOSTICO_NO_PUBLICABLE",
+        "cuando": "la serie tiene menos de 12 puntos (el pronóstico no se publica)"
+      }
+    ],
+    "motivo": null
+  },
+  "nota": "El prompt no indica gráfico: la capa de IA omite `grafico` y el recomendador elige líneas. El pronóstico necesita la serie histórica: la IA debe enviar el periodo completo."
+}

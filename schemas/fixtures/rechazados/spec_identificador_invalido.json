@@ -1,0 +1,43 @@
+{
+  "interfaz": "spec",
+  "motivo": "`campo` no tiene forma de código de la capa semántica.",
+  "documento": {
+    "esquema": "ciumb.spec/1.0",
+    "origen": "prompt",
+    "base": null,
+    "metricas": [
+      {
+        "id": "facturacion",
+        "agregacion": "suma"
+      }
+    ],
+    "dimensiones": [
+      {
+        "id": "tiempo",
+        "granularidad": "mes"
+      }
+    ],
+    "periodo": {
+      "desde": "2025-01-01",
+      "hasta": "2026-10-31",
+      "corte": "2026-10-31"
+    },
+    "analisis": {
+      "metodo": "variacion_interanual"
+    },
+    "grafico": {
+      "tipo": "lineas",
+      "origen": "prompt"
+    },
+    "alcance": {
+      "rol": "directivo"
+    },
+    "filtros": [
+      {
+        "campo": "facultad; DROP TABLE x",
+        "op": "=",
+        "valor": "Ingeniería"
+      }
+    ]
+  }
+}

@@ -9,7 +9,7 @@ Estados: [x] hecho · [~] en curso · [ ] pendiente. El detalle de cada historia
 - [x] S0-04 BD sintética de la fuente 1: DDL inferido y generador con semilla fija y defectos documentados.
 
 ## Sprint 2 (16–27 nov): vistas, ETL, semántica, compilador, motor, gráficos
-- [ ] Modelos `ciumb.spec/1.0` y contrato 2.0.0 (Pydantic + JSON Schema) y fixtures P1–P10.
+- [x] Modelos `ciumb.spec/1.0` y contrato 2.0.0 (Pydantic + JSON Schema), filtro de PII y fixtures P1–P10. BORRADOR hasta la revisión de la capa de IA (`docs/interfaz_capa_ia.md`).
 - [ ] DDL de `ana_` (Tablas 15–17) y de `rpt_` (Figura 6, Tabla 12); usuario de solo lectura.
 - [ ] Seed de la capa semántica (rpt_metrica, rpt_dimension, rpt_compatibilidad).
 - [ ] Validador de especificación (7 pasos).

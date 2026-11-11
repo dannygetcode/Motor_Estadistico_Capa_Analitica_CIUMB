@@ -1,0 +1,47 @@
+{
+  "id": "P9",
+  "prompt": "Hazme una torta del presupuesto ejecutado mes a mes en 2026.",
+  "fecha_referencia": "2026-11-05",
+  "spec": {
+    "esquema": "ciumb.spec/1.0",
+    "origen": "prompt",
+    "base": null,
+    "metricas": [
+      {
+        "id": "presupuesto_ejecutado",
+        "agregacion": "suma"
+      }
+    ],
+    "dimensiones": [
+      {
+        "id": "tiempo",
+        "granularidad": "mes"
+      }
+    ],
+    "periodo": {
+      "desde": "2026-01-01",
+      "hasta": "2026-10-31"
+    },
+    "analisis": {
+      "metodo": "serie"
+    },
+    "grafico": {
+      "tipo": "torta",
+      "origen": "prompt"
+    },
+    "alcance": {
+      "rol": "directivo"
+    }
+  },
+  "esperado": {
+    "resultado": "valida",
+    "grafico_final": "lineas",
+    "grafico_origen": "prompt",
+    "avisos": [
+      "GRAFICO_SUSTITUIDO"
+    ],
+    "avisos_con_datos": [],
+    "motivo": null
+  },
+  "nota": "Torta incompatible con una dimensión temporal: se entrega en líneas con aviso (Tabla 21)."
+}

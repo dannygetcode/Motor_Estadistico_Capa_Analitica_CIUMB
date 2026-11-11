@@ -1,0 +1,449 @@
+{
+  "$defs": {
+    "AlcanceContrato": {
+      "additionalProperties": false,
+      "properties": {
+        "facultad": {
+          "anyOf": [
+            {
+              "maxLength": 150,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Facultad"
+        },
+        "rol": {
+          "$ref": "#/$defs/Rol"
+        }
+      },
+      "required": [
+        "rol"
+      ],
+      "title": "AlcanceContrato",
+      "type": "object"
+    },
+    "EspecificacionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "base": {
+          "anyOf": [
+            {
+              "pattern": "^INF-[A-Z]{3}-[0-9]{2}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Base"
+        },
+        "grafico": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/GraficoContrato"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "id": {
+          "pattern": "^esp-[0-9]{8}-[0-9]{4}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "origen": {
+          "$ref": "#/$defs/Origen"
+        }
+      },
+      "required": [
+        "id",
+        "origen"
+      ],
+      "title": "EspecificacionRef",
+      "type": "object"
+    },
+    "GraficoContrato": {
+      "additionalProperties": false,
+      "description": "Gráfico que el usuario VE (el final). Si se sustituyó el pedido, la sección lleva una advertencia.",
+      "properties": {
+        "origen": {
+          "$ref": "#/$defs/OrigenGrafico"
+        },
+        "tipo": {
+          "$ref": "#/$defs/TipoGrafico"
+        }
+      },
+      "required": [
+        "tipo",
+        "origen"
+      ],
+      "title": "GraficoContrato",
+      "type": "object"
+    },
+    "Indicador": {
+      "additionalProperties": false,
+      "description": "Una cifra del informe. Todos los campos numéricos son cifras admitidas por el validador de cifras.",
+      "properties": {
+        "anterior": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Valor del periodo de comparación.",
+          "title": "Anterior"
+        },
+        "grupo": {
+          "anyOf": [
+            {
+              "patternProperties": {
+                "^[a-z][a-z0-9_]{0,59}$": {
+                  "maxLength": 300,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Categoría del valor: código de dimensión -> etiqueta (p. ej. facultad).",
+          "title": "Grupo"
+        },
+        "ic_inferior": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Límite inferior del intervalo de confianza.",
+          "title": "Ic Inferior"
+        },
+        "ic_superior": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Límite superior del intervalo de confianza.",
+          "title": "Ic Superior"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9_]{0,59}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "mes": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Mes al que corresponde el valor (AAAA-MM), como en la Figura 12.",
+          "title": "Mes"
+        },
+        "meta": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Meta"
+        },
+        "metodo": {
+          "anyOf": [
+            {
+              "maxLength": 300,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Si existe, reemplaza al `metodo` de la sección (D-07).",
+          "title": "Metodo"
+        },
+        "n": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Tamaño de la muestra.",
+          "title": "N"
+        },
+        "unidad": {
+          "anyOf": [
+            {
+              "maxLength": 40,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "P. ej. 'millones COP', '%', 'dias'. 'proporcion' = valor entre 0 y 1.",
+          "title": "Unidad"
+        },
+        "valor": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "description": "Valor calculado, sin redondear para presentación.",
+          "title": "Valor"
+        },
+        "valor_p": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Valor p de la prueba.",
+          "title": "Valor P"
+        },
+        "variacion_pct": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Variación porcentual frente a `anterior`.",
+          "title": "Variacion Pct"
+        }
+      },
+      "required": [
+        "id",
+        "valor"
+      ],
+      "title": "Indicador",
+      "type": "object"
+    },
+    "Origen": {
+      "enum": [
+        "prompt",
+        "plantilla_base",
+        "guardada"
+      ],
+      "title": "Origen",
+      "type": "string"
+    },
+    "OrigenGrafico": {
+      "enum": [
+        "prompt",
+        "recomendado"
+      ],
+      "title": "OrigenGrafico",
+      "type": "string"
+    },
+    "PeriodoContrato": {
+      "additionalProperties": false,
+      "properties": {
+        "corte": {
+          "format": "date",
+          "title": "Corte",
+          "type": "string"
+        },
+        "desde": {
+          "format": "date",
+          "title": "Desde",
+          "type": "string"
+        },
+        "hasta": {
+          "format": "date",
+          "title": "Hasta",
+          "type": "string"
+        }
+      },
+      "required": [
+        "desde",
+        "hasta",
+        "corte"
+      ],
+      "title": "PeriodoContrato",
+      "type": "object"
+    },
+    "Rol": {
+      "enum": [
+        "directivo",
+        "coordinador",
+        "tutor",
+        "consultor",
+        "administrador"
+      ],
+      "title": "Rol",
+      "type": "string"
+    },
+    "Seccion": {
+      "additionalProperties": false,
+      "properties": {
+        "advertencias": {
+          "default": [],
+          "items": {
+            "maxLength": 300,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Advertencias",
+          "type": "array"
+        },
+        "id": {
+          "pattern": "^[a-z][a-z0-9_]{0,59}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "indicadores": {
+          "items": {
+            "$ref": "#/$defs/Indicador"
+          },
+          "maxItems": 200,
+          "minItems": 1,
+          "title": "Indicadores",
+          "type": "array"
+        },
+        "metodo": {
+          "description": "Método de la sección; un indicador puede reemplazarlo con el suyo (D-07).",
+          "maxLength": 300,
+          "minLength": 1,
+          "title": "Metodo",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "indicadores",
+        "metodo"
+      ],
+      "title": "Seccion",
+      "type": "object"
+    },
+    "TipoGrafico": {
+      "enum": [
+        "barras",
+        "lineas",
+        "torta",
+        "dispersion",
+        "mapa_calor",
+        "histograma"
+      ],
+      "title": "TipoGrafico",
+      "type": "string"
+    }
+  },
+  "$id": "urn:ciumb:informe:2.0.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Paquete `ciumb.informe/2.0.0` que el área analítica entrega a la capa de IA.",
+  "properties": {
+    "alcance": {
+      "$ref": "#/$defs/AlcanceContrato"
+    },
+    "contrato": {
+      "const": "ciumb.informe/2.0.0",
+      "title": "Contrato",
+      "type": "string"
+    },
+    "especificacion": {
+      "$ref": "#/$defs/EspecificacionRef"
+    },
+    "huella_datos": {
+      "description": "sha256 de los datos agregados del informe (D-15). Sin nombres, documentos, correos ni NIT.",
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Huella Datos",
+      "type": "string"
+    },
+    "periodo": {
+      "$ref": "#/$defs/PeriodoContrato"
+    },
+    "secciones": {
+      "items": {
+        "$ref": "#/$defs/Seccion"
+      },
+      "maxItems": 30,
+      "minItems": 1,
+      "title": "Secciones",
+      "type": "array"
+    }
+  },
+  "required": [
+    "contrato",
+    "especificacion",
+    "periodo",
+    "alcance",
+    "secciones",
+    "huella_datos"
+  ],
+  "title": "ciumb.informe/2.0.0",
+  "type": "object"
+}

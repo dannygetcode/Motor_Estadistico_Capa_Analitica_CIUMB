@@ -1,0 +1,49 @@
+{
+  "id": "P1",
+  "prompt": "Muéstrame en barras cuántos proyectos de investigación hay por estado en cada facultad este año.",
+  "fecha_referencia": "2026-11-05",
+  "spec": {
+    "esquema": "ciumb.spec/1.0",
+    "origen": "prompt",
+    "base": null,
+    "metricas": [
+      {
+        "id": "proyectos",
+        "agregacion": "conteo"
+      }
+    ],
+    "dimensiones": [
+      {
+        "id": "estado"
+      },
+      {
+        "id": "facultad"
+      }
+    ],
+    "periodo": {
+      "desde": "2026-01-01",
+      "hasta": "2026-12-31"
+    },
+    "analisis": {
+      "metodo": "frecuencias"
+    },
+    "grafico": {
+      "tipo": "barras",
+      "origen": "prompt"
+    },
+    "alcance": {
+      "rol": "directivo"
+    }
+  },
+  "esperado": {
+    "resultado": "valida",
+    "grafico_final": "barras",
+    "grafico_origen": "prompt",
+    "avisos": [
+      "PERIODO_RECORTADO"
+    ],
+    "avisos_con_datos": [],
+    "motivo": null
+  },
+  "nota": "«Este año» llega como 2026 completo; el validador recorta `hasta` al último mes cerrado (2026-10-31) y lo avisa."
+}

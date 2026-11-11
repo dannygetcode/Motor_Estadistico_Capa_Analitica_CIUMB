@@ -1,0 +1,44 @@
+{
+  "id": "P5",
+  "prompt": "¿Hay relación entre el número de consultores y la satisfacción del cliente? Muéstralo en un diagrama de dispersión.",
+  "fecha_referencia": "2026-11-05",
+  "spec": {
+    "esquema": "ciumb.spec/1.0",
+    "origen": "prompt",
+    "base": null,
+    "metricas": [
+      {
+        "id": "n_consultores"
+      },
+      {
+        "id": "satisfaccion"
+      }
+    ],
+    "analisis": {
+      "metodo": "spearman",
+      "variables": [
+        "n_consultores",
+        "satisfaccion"
+      ],
+      "alfa": 0.05
+    },
+    "grafico": {
+      "tipo": "dispersion",
+      "origen": "prompt"
+    },
+    "alcance": {
+      "rol": "directivo"
+    }
+  },
+  "esperado": {
+    "resultado": "valida",
+    "grafico_final": "dispersion",
+    "grafico_origen": "prompt",
+    "avisos": [
+      "PERIODO_POR_DEFECTO"
+    ],
+    "avisos_con_datos": [],
+    "motivo": null
+  },
+  "nota": "Sin dimensiones: las dos métricas se leen registro a registro (una fila por consultoría). Sin periodo ni filtro temporal: último periodo cerrado."
+}

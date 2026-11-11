@@ -1,0 +1,772 @@
+{
+  "$defs": {
+    "Agregacion": {
+      "enum": [
+        "conteo",
+        "suma",
+        "promedio",
+        "mediana",
+        "razon"
+      ],
+      "title": "Agregacion",
+      "type": "string"
+    },
+    "Alcance": {
+      "additionalProperties": false,
+      "description": "Lo agrega el backend del CIUMB, nunca la IA (RF-21). BORRADOR: forma por confirmar con integración.\n\n- directivo, administrador: todo el centro.\n- coordinador: exige `facultad`.\n- tutor, consultor: exigen `id_usuario` (id de origen; el servicio lo seudonimiza y nunca lo envía a la IA).",
+      "properties": {
+        "facultad": {
+          "anyOf": [
+            {
+              "maxLength": 150,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Facultad"
+        },
+        "id_usuario": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Id Usuario"
+        },
+        "rol": {
+          "$ref": "#/$defs/Rol"
+        }
+      },
+      "required": [
+        "rol"
+      ],
+      "title": "Alcance",
+      "type": "object"
+    },
+    "AnalisisAtipicos": {
+      "additionalProperties": false,
+      "properties": {
+        "k": {
+          "default": 1.5,
+          "exclusiveMinimum": 0,
+          "maximum": 10,
+          "title": "K",
+          "type": "number"
+        },
+        "metodo": {
+          "const": "atipicos",
+          "title": "Metodo",
+          "type": "string"
+        },
+        "tecnica": {
+          "default": "RIC",
+          "enum": [
+            "RIC",
+            "puntaje_z"
+          ],
+          "title": "Tecnica",
+          "type": "string"
+        }
+      },
+      "required": [
+        "metodo"
+      ],
+      "title": "AnalisisAtipicos",
+      "type": "object"
+    },
+    "AnalisisDescriptiva": {
+      "additionalProperties": false,
+      "properties": {
+        "atipicos": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ReglaAtipicos"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "metodo": {
+          "const": "descriptiva",
+          "title": "Metodo",
+          "type": "string"
+        }
+      },
+      "required": [
+        "metodo"
+      ],
+      "title": "AnalisisDescriptiva",
+      "type": "object"
+    },
+    "AnalisisFrecuencias": {
+      "additionalProperties": false,
+      "properties": {
+        "metodo": {
+          "const": "frecuencias",
+          "title": "Metodo",
+          "type": "string"
+        },
+        "relativas": {
+          "default": false,
+          "title": "Relativas",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "metodo"
+      ],
+      "title": "AnalisisFrecuencias",
+      "type": "object"
+    },
+    "AnalisisPronostico": {
+      "additionalProperties": false,
+      "description": "Exige una dimensión temporal y al menos 12 puntos (RNF-13).",
+      "properties": {
+        "horizonte": {
+          "default": 2,
+          "description": "Periodos a pronosticar, en la granularidad pedida.",
+          "maximum": 12,
+          "minimum": 1,
+          "title": "Horizonte",
+          "type": "integer"
+        },
+        "metodo": {
+          "const": "pronostico",
+          "title": "Metodo",
+          "type": "string"
+        },
+        "nivel_confianza": {
+          "default": 0.95,
+          "exclusiveMaximum": 1,
+          "exclusiveMinimum": 0.5,
+          "title": "Nivel Confianza",
+          "type": "number"
+        },
+        "tecnica": {
+          "default": "holt",
+          "enum": [
+            "holt",
+            "regresion_lineal"
+          ],
+          "title": "Tecnica",
+          "type": "string"
+        }
+      },
+      "required": [
+        "metodo"
+      ],
+      "title": "AnalisisPronostico",
+      "type": "object"
+    },
+    "AnalisisPrueba": {
+      "additionalProperties": false,
+      "description": "Correlación o prueba de hipótesis (RF-04).\n\n`variables` son dos códigos de la capa semántica y NO tienen que estar en `dimensiones` (D-06):\n- pearson, spearman: dos métricas numéricas.\n- chi_cuadrado: dos dimensiones categóricas.\n- t_student, mann_whitney: [métrica numérica, dimensión con exactamente dos grupos].",
+      "properties": {
+        "alfa": {
+          "default": 0.05,
+          "exclusiveMaximum": 1,
+          "exclusiveMinimum": 0,
+          "title": "Alfa",
+          "type": "number"
+        },
+        "metodo": {
+          "enum": [
+            "pearson",
+            "spearman",
+            "chi_cuadrado",
+            "t_student",
+            "mann_whitney"
+          ],
+          "title": "Metodo",
+          "type": "string"
+        },
+        "variables": {
+          "items": {
+            "description": "Código de la capa semántica (GET /semantica).",
+            "pattern": "^[a-z][a-z0-9_]{0,59}$",
+            "type": "string"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "title": "Variables",
+          "type": "array"
+        }
+      },
+      "required": [
+        "metodo",
+        "variables"
+      ],
+      "title": "AnalisisPrueba",
+      "type": "object"
+    },
+    "AnalisisSegmentacion": {
+      "additionalProperties": false,
+      "properties": {
+        "k": {
+          "anyOf": [
+            {
+              "maximum": 10,
+              "minimum": 2,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Si se omite, se elige por silueta.",
+          "title": "K"
+        },
+        "metodo": {
+          "const": "segmentacion",
+          "title": "Metodo",
+          "type": "string"
+        },
+        "tecnica": {
+          "const": "kmedias",
+          "default": "kmedias",
+          "title": "Tecnica",
+          "type": "string"
+        }
+      },
+      "required": [
+        "metodo"
+      ],
+      "title": "AnalisisSegmentacion",
+      "type": "object"
+    },
+    "AnalisisSerie": {
+      "additionalProperties": false,
+      "properties": {
+        "acumulado": {
+          "default": false,
+          "title": "Acumulado",
+          "type": "boolean"
+        },
+        "metodo": {
+          "const": "serie",
+          "title": "Metodo",
+          "type": "string"
+        }
+      },
+      "required": [
+        "metodo"
+      ],
+      "title": "AnalisisSerie",
+      "type": "object"
+    },
+    "AnalisisVariacion": {
+      "additionalProperties": false,
+      "description": "`variacion`: frente al periodo inmediatamente anterior. `variacion_interanual`: frente al mismo\nperiodo del año anterior (Figura 10).",
+      "properties": {
+        "metodo": {
+          "enum": [
+            "variacion",
+            "variacion_interanual"
+          ],
+          "title": "Metodo",
+          "type": "string"
+        }
+      },
+      "required": [
+        "metodo"
+      ],
+      "title": "AnalisisVariacion",
+      "type": "object"
+    },
+    "DimensionSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "granularidad": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Granularidad"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Solo para dimensiones temporales (p. ej. `tiempo`). Por defecto, `mes`."
+        },
+        "id": {
+          "description": "Código de la capa semántica (GET /semantica).",
+          "pattern": "^[a-z][a-z0-9_]{0,59}$",
+          "title": "Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "DimensionSpec",
+      "type": "object"
+    },
+    "Filtro": {
+      "additionalProperties": false,
+      "description": "Condición `campo op valor` sobre una dimensión permitida. El valor siempre viaja como parámetro SQL.",
+      "properties": {
+        "campo": {
+          "description": "Código de la capa semántica (GET /semantica).",
+          "pattern": "^[a-z][a-z0-9_]{0,59}$",
+          "title": "Campo",
+          "type": "string"
+        },
+        "op": {
+          "$ref": "#/$defs/Operador"
+        },
+        "valor": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  }
+                ]
+              },
+              "maxItems": 100,
+              "minItems": 1,
+              "type": "array"
+            }
+          ],
+          "title": "Valor"
+        }
+      },
+      "required": [
+        "campo",
+        "op",
+        "valor"
+      ],
+      "title": "Filtro",
+      "type": "object"
+    },
+    "Formato": {
+      "enum": [
+        "pdf",
+        "docx",
+        "xlsx",
+        "html",
+        "csv"
+      ],
+      "title": "Formato",
+      "type": "string"
+    },
+    "GraficoSpec": {
+      "additionalProperties": false,
+      "description": "Si el prompt no menciona un tipo, la capa de IA omite `grafico` y lo elige el recomendador (Tabla 21).",
+      "properties": {
+        "max_sectores": {
+          "anyOf": [
+            {
+              "maximum": 6,
+              "minimum": 2,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Solo torta. Máximo 6 (Tabla 21).",
+          "title": "Max Sectores"
+        },
+        "origen": {
+          "$ref": "#/$defs/OrigenGrafico",
+          "default": "prompt"
+        },
+        "reemplaza": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z_]{1,30}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Tipo de la plantilla base que este gráfico reemplaza (informativo).",
+          "title": "Reemplaza"
+        },
+        "tipo": {
+          "$ref": "#/$defs/TipoGrafico"
+        }
+      },
+      "required": [
+        "tipo"
+      ],
+      "title": "GraficoSpec",
+      "type": "object"
+    },
+    "Granularidad": {
+      "enum": [
+        "mes",
+        "trimestre",
+        "semestre",
+        "anio"
+      ],
+      "title": "Granularidad",
+      "type": "string"
+    },
+    "MetricaSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "agregacion": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Agregacion"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Si se omite, se usa la agregación por defecto de la métrica en la capa semántica."
+        },
+        "id": {
+          "description": "Código de la capa semántica (GET /semantica).",
+          "pattern": "^[a-z][a-z0-9_]{0,59}$",
+          "title": "Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "MetricaSpec",
+      "type": "object"
+    },
+    "Operador": {
+      "enum": [
+        "=",
+        "!=",
+        ">",
+        ">=",
+        "<",
+        "<=",
+        "en",
+        "entre"
+      ],
+      "title": "Operador",
+      "type": "string"
+    },
+    "Origen": {
+      "enum": [
+        "prompt",
+        "plantilla_base",
+        "guardada"
+      ],
+      "title": "Origen",
+      "type": "string"
+    },
+    "OrigenGrafico": {
+      "enum": [
+        "prompt",
+        "recomendado"
+      ],
+      "title": "OrigenGrafico",
+      "type": "string"
+    },
+    "Periodo": {
+      "additionalProperties": false,
+      "description": "Opcional (D-08). Un filtro sobre una dimensión temporal también cuenta como periodo.",
+      "properties": {
+        "corte": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Fecha de corte de los datos. Por defecto, `hasta`.",
+          "title": "Corte"
+        },
+        "desde": {
+          "format": "date",
+          "title": "Desde",
+          "type": "string"
+        },
+        "hasta": {
+          "format": "date",
+          "title": "Hasta",
+          "type": "string"
+        }
+      },
+      "required": [
+        "desde",
+        "hasta"
+      ],
+      "title": "Periodo",
+      "type": "object"
+    },
+    "ReglaAtipicos": {
+      "additionalProperties": false,
+      "description": "Regla de atípicos anidada en `descriptiva` (Figura 15).",
+      "properties": {
+        "k": {
+          "default": 1.5,
+          "description": "RIC: múltiplo del rango; Z: umbral.",
+          "exclusiveMinimum": 0,
+          "maximum": 10,
+          "title": "K",
+          "type": "number"
+        },
+        "metodo": {
+          "default": "RIC",
+          "enum": [
+            "RIC",
+            "puntaje_z"
+          ],
+          "title": "Metodo",
+          "type": "string"
+        }
+      },
+      "title": "ReglaAtipicos",
+      "type": "object"
+    },
+    "Rol": {
+      "enum": [
+        "directivo",
+        "coordinador",
+        "tutor",
+        "consultor",
+        "administrador"
+      ],
+      "title": "Rol",
+      "type": "string"
+    },
+    "Salida": {
+      "additionalProperties": false,
+      "properties": {
+        "formatos": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Formato"
+          },
+          "maxItems": 5,
+          "title": "Formatos",
+          "type": "array"
+        },
+        "secciones": {
+          "default": [],
+          "items": {
+            "description": "Código de la capa semántica (GET /semantica).",
+            "pattern": "^[a-z][a-z0-9_]{0,59}$",
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Secciones",
+          "type": "array"
+        }
+      },
+      "title": "Salida",
+      "type": "object"
+    },
+    "TipoGrafico": {
+      "enum": [
+        "barras",
+        "lineas",
+        "torta",
+        "dispersion",
+        "mapa_calor",
+        "histograma"
+      ],
+      "title": "TipoGrafico",
+      "type": "string"
+    }
+  },
+  "$id": "urn:ciumb:spec:1.0",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Especificación de informe `ciumb.spec/1.0`. Única entrada del área analítica.",
+  "properties": {
+    "alcance": {
+      "$ref": "#/$defs/Alcance"
+    },
+    "analisis": {
+      "anyOf": [
+        {
+          "discriminator": {
+            "mapping": {
+              "atipicos": "#/$defs/AnalisisAtipicos",
+              "chi_cuadrado": "#/$defs/AnalisisPrueba",
+              "descriptiva": "#/$defs/AnalisisDescriptiva",
+              "frecuencias": "#/$defs/AnalisisFrecuencias",
+              "mann_whitney": "#/$defs/AnalisisPrueba",
+              "pearson": "#/$defs/AnalisisPrueba",
+              "pronostico": "#/$defs/AnalisisPronostico",
+              "segmentacion": "#/$defs/AnalisisSegmentacion",
+              "serie": "#/$defs/AnalisisSerie",
+              "spearman": "#/$defs/AnalisisPrueba",
+              "t_student": "#/$defs/AnalisisPrueba",
+              "variacion": "#/$defs/AnalisisVariacion",
+              "variacion_interanual": "#/$defs/AnalisisVariacion"
+            },
+            "propertyName": "metodo"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/AnalisisFrecuencias"
+            },
+            {
+              "$ref": "#/$defs/AnalisisDescriptiva"
+            },
+            {
+              "$ref": "#/$defs/AnalisisSerie"
+            },
+            {
+              "$ref": "#/$defs/AnalisisVariacion"
+            },
+            {
+              "$ref": "#/$defs/AnalisisPrueba"
+            },
+            {
+              "$ref": "#/$defs/AnalisisAtipicos"
+            },
+            {
+              "$ref": "#/$defs/AnalisisPronostico"
+            },
+            {
+              "$ref": "#/$defs/AnalisisSegmentacion"
+            }
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Si se omite: descriptiva.",
+      "title": "Analisis"
+    },
+    "base": {
+      "anyOf": [
+        {
+          "pattern": "^INF-[A-Z]{3}-[0-9]{2}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Código INF de la plantilla base, si se usó.",
+      "title": "Base"
+    },
+    "dimensiones": {
+      "default": [],
+      "description": "Agrupación del gráfico. Vacía: se calcula el total.",
+      "items": {
+        "$ref": "#/$defs/DimensionSpec"
+      },
+      "maxItems": 3,
+      "title": "Dimensiones",
+      "type": "array"
+    },
+    "esquema": {
+      "const": "ciumb.spec/1.0",
+      "title": "Esquema",
+      "type": "string"
+    },
+    "filtros": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Filtro"
+      },
+      "maxItems": 20,
+      "title": "Filtros",
+      "type": "array"
+    },
+    "grafico": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/GraficoSpec"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Si se omite: lo elige el recomendador."
+    },
+    "metricas": {
+      "items": {
+        "$ref": "#/$defs/MetricaSpec"
+      },
+      "maxItems": 5,
+      "minItems": 1,
+      "title": "Metricas",
+      "type": "array"
+    },
+    "origen": {
+      "$ref": "#/$defs/Origen"
+    },
+    "periodo": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Periodo"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "salida": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Salida"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    }
+  },
+  "required": [
+    "esquema",
+    "origen",
+    "metricas",
+    "alcance"
+  ],
+  "title": "ciumb.spec/1.0",
+  "type": "object"
+}

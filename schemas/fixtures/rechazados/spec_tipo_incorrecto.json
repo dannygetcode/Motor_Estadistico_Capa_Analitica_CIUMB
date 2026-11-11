@@ -1,0 +1,37 @@
+{
+  "interfaz": "spec",
+  "motivo": "`max_sectores` debe ser entero, no texto.",
+  "documento": {
+    "esquema": "ciumb.spec/1.0",
+    "origen": "prompt",
+    "base": null,
+    "metricas": [
+      {
+        "id": "facturacion",
+        "agregacion": "suma"
+      }
+    ],
+    "dimensiones": [
+      {
+        "id": "tiempo",
+        "granularidad": "mes"
+      }
+    ],
+    "periodo": {
+      "desde": "2025-01-01",
+      "hasta": "2026-10-31",
+      "corte": "2026-10-31"
+    },
+    "analisis": {
+      "metodo": "variacion_interanual"
+    },
+    "grafico": {
+      "tipo": "torta",
+      "origen": "prompt",
+      "max_sectores": "6"
+    },
+    "alcance": {
+      "rol": "directivo"
+    }
+  }
+}

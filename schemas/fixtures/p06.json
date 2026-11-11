@@ -1,0 +1,56 @@
+{
+  "id": "P6",
+  "prompt": "Usa el informe de ejecución presupuestal, pero solo para la línea de analítica de datos y muéstralo como histograma.",
+  "fecha_referencia": "2026-11-05",
+  "spec": {
+    "esquema": "ciumb.spec/1.0",
+    "origen": "plantilla_base",
+    "base": "INF-INV-02",
+    "metricas": [
+      {
+        "id": "pct_ejecucion"
+      }
+    ],
+    "filtros": [
+      {
+        "campo": "linea_investigacion",
+        "op": "=",
+        "valor": "Analítica de datos"
+      }
+    ],
+    "periodo": {
+      "desde": "2026-01-01",
+      "hasta": "2026-10-31"
+    },
+    "analisis": {
+      "metodo": "descriptiva",
+      "atipicos": {
+        "metodo": "RIC",
+        "k": 1.5
+      }
+    },
+    "grafico": {
+      "tipo": "histograma",
+      "origen": "prompt",
+      "reemplaza": "caja"
+    },
+    "alcance": {
+      "rol": "coordinador",
+      "facultad": "Ingeniería"
+    }
+  },
+  "esperado": {
+    "resultado": "valida",
+    "grafico_final": "histograma",
+    "grafico_origen": "prompt",
+    "avisos": [],
+    "avisos_con_datos": [
+      {
+        "codigo": "MUESTRA_PEQUENA",
+        "cuando": "hay menos de 20 observaciones (9 proyectos en el ejemplo del diseño)"
+      }
+    ],
+    "motivo": null
+  },
+  "nota": "Figura 15."
+}

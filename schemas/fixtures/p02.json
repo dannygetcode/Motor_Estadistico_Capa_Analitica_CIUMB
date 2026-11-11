@@ -1,0 +1,55 @@
+{
+  "id": "P2",
+  "prompt": "Quiero una torta con la distribución de las prácticas por programa en 2026-2.",
+  "fecha_referencia": "2026-11-05",
+  "spec": {
+    "esquema": "ciumb.spec/1.0",
+    "origen": "prompt",
+    "base": null,
+    "metricas": [
+      {
+        "id": "practicas",
+        "agregacion": "conteo"
+      }
+    ],
+    "dimensiones": [
+      {
+        "id": "programa"
+      }
+    ],
+    "filtros": [
+      {
+        "campo": "periodo_academico",
+        "op": "=",
+        "valor": "2026-2"
+      }
+    ],
+    "analisis": {
+      "metodo": "frecuencias",
+      "relativas": true
+    },
+    "grafico": {
+      "tipo": "torta",
+      "origen": "prompt",
+      "max_sectores": 6
+    },
+    "alcance": {
+      "rol": "coordinador",
+      "facultad": "Ingeniería"
+    }
+  },
+  "esperado": {
+    "resultado": "valida",
+    "grafico_final": "torta",
+    "grafico_origen": "prompt",
+    "avisos": [],
+    "avisos_con_datos": [
+      {
+        "codigo": "TORTA_OTROS",
+        "cuando": "el resultado tiene más de 6 programas (9 en el ejemplo del diseño)"
+      }
+    ],
+    "motivo": null
+  },
+  "nota": "Figura 13. No trae `periodo`: el filtro por `periodo_academico` cuenta como periodo (D-08)."
+}

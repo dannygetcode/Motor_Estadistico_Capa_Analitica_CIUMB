@@ -1,0 +1,47 @@
+{
+  "interfaz": "contrato",
+  "motivo": "Versión del contrato distinta de 2.0.0.",
+  "documento": {
+    "contrato": "ciumb.informe/1.0.0",
+    "especificacion": {
+      "id": "esp-20261105-0042",
+      "origen": "prompt",
+      "base": null,
+      "grafico": {
+        "tipo": "lineas",
+        "origen": "prompt"
+      }
+    },
+    "periodo": {
+      "desde": "2025-01-01",
+      "hasta": "2026-10-31",
+      "corte": "2026-10-31"
+    },
+    "alcance": {
+      "rol": "directivo"
+    },
+    "secciones": [
+      {
+        "id": "facturacion_consultorias",
+        "indicadores": [
+          {
+            "id": "facturacion_ene_oct",
+            "valor": 412.6,
+            "anterior": 365.0,
+            "variacion_pct": 13.0,
+            "unidad": "millones COP",
+            "n": 118
+          },
+          {
+            "id": "mes_mayor_facturacion",
+            "mes": "2026-06",
+            "valor": 58.3
+          }
+        ],
+        "metodo": "suma mensual; variación frente al mismo periodo del año anterior",
+        "advertencias": []
+      }
+    ],
+    "huella_datos": "sha256:49a5c322a34538a1483748164485d2162ab0971964d77b3c867e251939cd16e8"
+  }
+}

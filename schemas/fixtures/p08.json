@@ -1,0 +1,51 @@
+{
+  "id": "P8",
+  "prompt": "Agrupa las empresas según su actividad con nosotros y muéstrame los grupos en un gráfico de dispersión.",
+  "fecha_referencia": "2026-11-05",
+  "spec": {
+    "esquema": "ciumb.spec/1.0",
+    "origen": "prompt",
+    "base": null,
+    "metricas": [
+      {
+        "id": "practicas",
+        "agregacion": "conteo"
+      },
+      {
+        "id": "convenios",
+        "agregacion": "conteo"
+      },
+      {
+        "id": "consultorias",
+        "agregacion": "conteo"
+      }
+    ],
+    "dimensiones": [
+      {
+        "id": "empresa"
+      }
+    ],
+    "analisis": {
+      "metodo": "segmentacion",
+      "tecnica": "kmedias"
+    },
+    "grafico": {
+      "tipo": "dispersion",
+      "origen": "prompt"
+    },
+    "alcance": {
+      "rol": "directivo"
+    }
+  },
+  "esperado": {
+    "resultado": "valida",
+    "grafico_final": "dispersion",
+    "grafico_origen": "prompt",
+    "avisos": [
+      "PERIODO_POR_DEFECTO"
+    ],
+    "avisos_con_datos": [],
+    "motivo": null
+  },
+  "nota": "Tres métricas de tres hechos distintos unidas por la dimensión conformada `empresa`. Hacia la IA solo viajan los agregados por grupo, nunca la razón social."
+}

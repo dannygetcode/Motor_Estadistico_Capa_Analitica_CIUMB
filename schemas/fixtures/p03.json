@@ -1,0 +1,46 @@
+{
+  "id": "P3",
+  "prompt": "Haz un gráfico de líneas con la facturación mensual de consultorías de 2025 y 2026 y dime cuánto varió entre ambos años.",
+  "fecha_referencia": "2026-11-05",
+  "spec": {
+    "esquema": "ciumb.spec/1.0",
+    "origen": "prompt",
+    "base": null,
+    "metricas": [
+      {
+        "id": "facturacion",
+        "agregacion": "suma"
+      }
+    ],
+    "dimensiones": [
+      {
+        "id": "tiempo",
+        "granularidad": "mes"
+      }
+    ],
+    "periodo": {
+      "desde": "2025-01-01",
+      "hasta": "2026-10-31",
+      "corte": "2026-10-31"
+    },
+    "analisis": {
+      "metodo": "variacion_interanual"
+    },
+    "grafico": {
+      "tipo": "lineas",
+      "origen": "prompt"
+    },
+    "alcance": {
+      "rol": "directivo"
+    }
+  },
+  "esperado": {
+    "resultado": "valida",
+    "grafico_final": "lineas",
+    "grafico_origen": "prompt",
+    "avisos": [],
+    "avisos_con_datos": [],
+    "motivo": null
+  },
+  "nota": "Figuras 10 y 12."
+}

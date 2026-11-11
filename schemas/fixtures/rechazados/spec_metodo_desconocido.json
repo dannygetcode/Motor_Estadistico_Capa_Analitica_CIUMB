@@ -1,0 +1,36 @@
+{
+  "interfaz": "spec",
+  "motivo": "Método que el motor no implementa.",
+  "documento": {
+    "esquema": "ciumb.spec/1.0",
+    "origen": "prompt",
+    "base": null,
+    "metricas": [
+      {
+        "id": "facturacion",
+        "agregacion": "suma"
+      }
+    ],
+    "dimensiones": [
+      {
+        "id": "tiempo",
+        "granularidad": "mes"
+      }
+    ],
+    "periodo": {
+      "desde": "2025-01-01",
+      "hasta": "2026-10-31",
+      "corte": "2026-10-31"
+    },
+    "analisis": {
+      "metodo": "regresion_logistica"
+    },
+    "grafico": {
+      "tipo": "lineas",
+      "origen": "prompt"
+    },
+    "alcance": {
+      "rol": "directivo"
+    }
+  }
+}
