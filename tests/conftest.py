@@ -16,6 +16,10 @@ DIR_EJEMPLOS = DIR_SCHEMAS / "ejemplos"
 
 IDS_PROMPTS = [f"p{i:02d}" for i in range(1, 11)]
 
+# Marca de las pruebas del relevo: definen el comportamiento esperado de funciones que aún no existen.
+# `strict=True`: cuando la función se implemente y la prueba pase, pytest falla hasta que se quite la marca.
+PENDIENTE = pytest.mark.xfail(raises=NotImplementedError, strict=True, reason="pendiente de implementar")
+
 
 def leer_json(ruta: Path) -> dict:
     return json.loads(ruta.read_text(encoding="utf-8"))

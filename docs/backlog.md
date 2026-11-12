@@ -15,16 +15,17 @@ Estados: [x] hecho · [~] en curso · [ ] pendiente. El detalle de cada historia
 - [ ] Las otras 10 plantillas base (falta la lista de las 18 priorizadas).
 - [x] Validador de especificación (7 pasos) y revisión posterior a los datos (supresión < 5, muestra, gráfico).
 - [x] Compilador de spec a SQL parametrizado con huella determinista (razones, agregados, instantáneas, alcance). SQL de P1–P9 verificado con EXPLAIN en PostgreSQL 16.
-- [ ] Vistas de extracción de `fuentes/` sobre el esquema `ciumb`.
-- [ ] ETL: extracción incremental, seudonimización, reglas de calidad, carga de dimensiones y hechos.
-- [ ] Motor estadístico (descriptiva, series, inferencia; Tabla 8).
-- [ ] Gráficos (6 tipos) y recomendador (Tabla 21).
+- [~] Vistas de extracción de `fuentes/` sobre el esquema `ciumb`. Firmas y pruebas xfail listas.
+- [~] ETL: extracción incremental, seudonimización, reglas de calidad, carga de dimensiones y hechos. Seudonimización hecha; firmas y pruebas xfail de calidad y carga incremental; falta la integración.
+- [~] Motor estadístico (descriptiva, series, inferencia; Tabla 8). Firmas y pruebas xfail contra SciPy listas.
+- [~] Gráficos (6 tipos) y recomendador (Tabla 21). Recomendador hecho (validador de specs); firmas y pruebas xfail del generador.
 
 ## Sprint 3 (30 nov–11 dic): ML, contrato, validador, exportación
-- [ ] ML: pronóstico, atípicos, segmentación.
-- [ ] Empaquetador del contrato y filtro de PII.
+- [~] ML: pronóstico, atípicos, segmentación. Firmas y pruebas xfail contra statsmodels y scikit-learn listas.
+- [~] Empaquetador del contrato y filtro de PII. Filtro de PII hecho; firmas y pruebas xfail del empaquetador.
 - [x] Validador de cifras (6 pasos) con regeneraciones y plantilla sin IA por defecto (adelantado en la sesión 1).
-- [ ] Exportación PDF, DOCX, XLSX, HTML y CSV.
+- [~] Exportación PDF, DOCX, XLSX, HTML y CSV. Firmas y pruebas xfail listas.
+- [ ] Orquestación del flujo, rutas de la API y trazabilidad en `rpt_` (sin firmas todavía).
 
 ## Sprint 4 (14–19 dic): evaluación
 - [ ] Pruebas de aceptación P1–P10 y métricas de los objetivos (Tabla 2).
