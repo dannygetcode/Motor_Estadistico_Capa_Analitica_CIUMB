@@ -17,7 +17,7 @@ Formato breve tipo ADR. Cada decisión: contexto, decisión, consecuencia. Las d
 
 ## D-03 · Herramientas de desarrollo fuera de la Tabla 19 (2026-11-11)
 - Decisión: ruff, pre-commit, httpx (lo exige `fastapi.testclient`) y Faker van solo en el grupo `dev`.
-  No se distribuyen con el servicio. Faker y pandoc los autorizó Daniel en PROMPT_0.
+  No se distribuyen con el servicio. Faker y pandoc los autorizó Daniel.
 - Nota: Starlette avisa que `httpx` en su TestClient está obsoleto en favor de `httpx2`; el aviso se filtró en
   `pyproject.toml`. Revisar cuando se actualice FastAPI.
 
@@ -32,14 +32,14 @@ Formato breve tipo ADR. Cada decisión: contexto, decisión, consecuencia. Las d
 - Consecuencia: cuando llegue el ER real, solo cambian las vistas de `fuentes/` y el DDL sintético.
 
 ## D-05 · Defectos sintéticos adicionales (2026-11-11)
-- Contexto: PROMPT_0 pide 4 tipos; la sección 4.2.2 lista además presupuesto ejecutado negativo, prácticas sin
+- Contexto: el plan inicial pedía 4 tipos; la sección 4.2.2 lista además presupuesto ejecutado negativo, prácticas sin
   empresa y convenios sin fecha de fin.
 - Decisión: se insertan los 7 tipos (13 claves, con conteos exactos y disjuntos), documentados en
   `datos_sinteticos/defectos.md`.
 
 ## Decisiones sobre las contradicciones y huecos del diseño (2026-11-11)
 Los 12 puntos detectados al dividir el documento quedan resueltos así. D-06 a D-08 las tomó Daniel;
-D-09 a D-17 las tomó la sesión 1 con la opción mínima (PROMPT_1). La lista original se conserva al final.
+D-09 a D-17 se resolvieron con la opción mínima. La lista original se conserva al final.
 
 > **BORRADOR — frontera con la capa de IA.** `ciumb.spec/1.0` y el contrato `ciumb.informe/2.0.0` son el acuerdo
 > con la capa de IA (Laura Valentina Maldonado) y ella **aún no los ha revisado**. D-06, D-07, D-08 y D-15 son
@@ -240,6 +240,6 @@ D-09 a D-17 las tomó la sesión 1 con la opción mínima (PROMPT_1). La lista o
 10. **Figura 13:** la spec no tiene `periodo` (usa un filtro por `periodo_academico`), aunque la Tabla 20 dice que
     sin periodo se usa el último periodo cerrado.
 11. **Endpoints:** la Figura 9 lista `GET /salud/ia`, y la Tabla 12 nombra `GET /informes/catalogo`, que no está en
-    la lista de la Figura 9. La sesión 0 creó `GET /salud` (lo pidió PROMPT_0).
+    la lista de la Figura 9. Se creó `GET /salud`.
 12. **Carga incremental:** la Figura 2 dice «carga incremental por fecha de modificación», pero ninguna tabla del
     ER inferido tiene esa columna; 4.3.2 aclara que hay respaldo por huella de fila (ver D-04).

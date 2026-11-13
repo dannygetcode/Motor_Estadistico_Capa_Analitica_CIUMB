@@ -1,4 +1,4 @@
-# Interfaz entre la capa de IA y el área analítica — BORRADOR para revisión
+# Interfaz entre la capa de IA y el área analítica - BORRADOR para revisión
 
 Para: Laura Valentina Maldonado (capa de IA). De: Daniel Barragán (área analítica). Fecha: 2026-11-11.
 

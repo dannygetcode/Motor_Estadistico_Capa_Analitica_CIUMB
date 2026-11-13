@@ -1,6 +1,6 @@
 # Relevo entre sesiones
 
-## Estado al cierre de la sesión 1 (2026-11-11, Fable · PROMPT_1 completo)
+## Estado al cierre de la sesión 1 (2026-11-11)
 Ramas encadenadas, sin fusionar a `main` (lo decide Daniel): `feat/t1-interfaces-frontera` →
 `feat/t2-dw-semantica` → `feat/t3-validador-spec` → `feat/t4-compilador` → `feat/t5-validador-cifras` →
 `feat/t6-relevo` (la última contiene todo).

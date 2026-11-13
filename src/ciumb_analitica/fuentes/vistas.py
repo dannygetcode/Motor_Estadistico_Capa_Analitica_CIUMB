@@ -2,7 +2,7 @@
 
 Es el ÚNICO lugar que conoce los nombres de tablas y columnas de la base transaccional del CIUMB. Hoy apuntan
 al modelo INFERIDO (`datos_sinteticos/ddl.sql`, esquema `ciumb`); cuando llegue el modelo real solo cambia este
-módulo, no el datawarehouse (CLAUDE.md, «Estado conocido»).
+módulo, no el datawarehouse.
 
 Minimización (Tabla 13, invariante 5): una vista nunca selecciona `nombre_completo`, `documento`, `correo`,
 `contrasena_hash`, `razon_social` ni `titulo`. El NIT y los ids de personas se leen solo para convertirlos en

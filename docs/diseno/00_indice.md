@@ -38,7 +38,7 @@ Leyenda: ★ = lectura frecuente durante la construcción · (T) = marco teóric
 
 ## Capítulo 4 — Análisis y diseño (el núcleo para construir)
 - `4_analisis_diseno_estructuras_datos.md` — introducción del capítulo.
-- ★ `4.1_diagrama_bloques_desarrollo_proyecto.md` — Figura 2: bloques del área analítica (mapa de paquetes de CLAUDE.md). Al ubicar un componente.
+- ★ `4.1_diagrama_bloques_desarrollo_proyecto.md` — Figura 2: bloques del área analítica (un bloque por paquete de `src/ciumb_analitica/`). Al ubicar un componente.
 - ★ `4.2_modelo_datos_fuentes.md` — fuentes 1 (BD CIUMB) y 2 (esquema rpt_); aclaración de que el ER es **inferido**.
 - ★ `4.2.1_diagrama_modelo_cada_fuente.md` — Figuras 3–6: ER inferido (investigación, relación externa, usuarios) y esquema rpt_ con todos sus campos. Al tocar `fuentes/`, `datos_sinteticos/`, `trazabilidad/`, `semantica/`.
 - ★ `4.2.2_descripcion_modelo.md` — Tablas 10–12 (entidades e informes que alimentan), **Tabla 13 (campos sensibles y tratamiento en ETL)** y reglas de calidad. Al tocar `etl/` o PII.
