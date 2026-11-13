@@ -1,9 +1,7 @@
 # Relevo entre sesiones
 
 ## Estado al cierre de la sesión 1 (2026-11-11)
-Ramas encadenadas, sin fusionar a `main` (lo decide Daniel): `feat/t1-interfaces-frontera` →
-`feat/t2-dw-semantica` → `feat/t3-validador-spec` → `feat/t4-compilador` → `feat/t5-validador-cifras` →
-`feat/t6-relevo` (la última contiene todo).
+Las ramas `feat/t1-interfaces-frontera` a `feat/t6-relevo` se fusionaron en `main` el 2026-11-13.
 
 `uv run pytest`: **487 en verde, 148 `xfail` (pendiente de implementar), 1 omitida** (PDF: WeasyPrint no carga
 GTK en esta máquina). `uv run ruff check .`: limpio.
