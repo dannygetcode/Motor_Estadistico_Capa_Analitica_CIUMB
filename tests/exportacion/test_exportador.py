@@ -15,9 +15,7 @@ from ciumb_analitica.exportacion import exportador
 from ciumb_analitica.spec.modelos import Formato
 from ciumb_analitica.validador_cifras.plantilla import plantilla_por_defecto
 from ciumb_analitica.validador_cifras.validador import validar_narrativa
-from tests.conftest import DIR_FIXTURES, PENDIENTE, leer_json
-
-pytestmark = PENDIENTE
+from tests.conftest import DIR_FIXTURES, leer_json
 
 CONTRATO = cargar_contrato(leer_json(DIR_FIXTURES / "contrato_p03.json"))
 TABLA = pd.DataFrame({"anio": [2025, 2026], "facturacion_ene_oct": [365.0, 412.6], "consultorias": [104, 118]})
