@@ -13,9 +13,7 @@ from ciumb_analitica.contrato.pii import ErrorPII
 from ciumb_analitica.motor.resultado import SeccionCalculada
 from ciumb_analitica.semantica.semilla import capa_semilla
 from ciumb_analitica.spec.validador import validar
-from tests.conftest import DIR_FIXTURES, PENDIENTE, fixture_prompt, leer_json
-
-pytestmark = PENDIENTE
+from tests.conftest import DIR_FIXTURES, fixture_prompt, leer_json
 
 CAPA = capa_semilla()
 HUELLA = hashlib.sha256(b"datos de prueba").hexdigest()
