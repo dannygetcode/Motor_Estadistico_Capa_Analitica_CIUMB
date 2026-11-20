@@ -12,9 +12,7 @@ import pytest
 from ciumb_analitica.graficos import generador
 from ciumb_analitica.semantica.semilla import capa_semilla
 from ciumb_analitica.spec.validador import revisar_datos, validar
-from tests.conftest import PENDIENTE, fixture_prompt
-
-pytestmark = PENDIENTE
+from tests.conftest import fixture_prompt
 
 CAPA = capa_semilla()
 FIRMA_PNG = b"\x89PNG\r\n\x1a\n"
