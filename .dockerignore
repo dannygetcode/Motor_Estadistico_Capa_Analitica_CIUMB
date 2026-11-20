@@ -1,0 +1,10 @@
+.venv
+.env
+.env.*
+!.env.example
+.git
+**/__pycache__
+.pytest_cache
+.ruff_cache
+informes_generados
+docs

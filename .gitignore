@@ -23,3 +23,7 @@ datos_sinteticos/salida/
 .idea/
 Thumbs.db
 .DS_Store
+
+# Informes generados por el servicio en desarrollo
+informes_generados/
+informes_demo/
