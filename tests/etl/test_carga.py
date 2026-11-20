@@ -1,8 +1,7 @@
 """etl.carga: huella de fila y detección de cambios (carga incremental, D-17).
 
 Las funciones que tocan la base (`cargar_dimensiones`, `cargar_hechos`, `recalcular_agregados`, `ejecutar_etl`)
-necesitan la fuente `ciumb` y `ana_` en PostgreSQL: sus pruebas de integración quedan por escribir junto con
-la implementación (ver docs/handoff.md).
+se prueban en `tests/etl/test_integracion.py` con la fuente sintética cargada en SQLite.
 """
 
 from __future__ import annotations
@@ -14,9 +13,6 @@ from decimal import Decimal
 import pandas as pd
 
 from ciumb_analitica.etl import carga
-from tests.conftest import PENDIENTE
-
-pytestmark = PENDIENTE
 
 FILA = {"id_convenio": 7, "id_empresa": 3, "tipo": "marco", "fecha_fin": date(2026, 12, 31), "valor": Decimal("1.50")}
 

@@ -9,9 +9,6 @@ import pytest
 
 from ciumb_analitica.etl import calidad
 from datos_sinteticos.generar import CATALOGO_ESTADOS, DEFECTOS, generar
-from tests.conftest import PENDIENTE
-
-pytestmark = PENDIENTE
 
 DATOS = generar()
 IDS = {

@@ -8,9 +8,7 @@ import pytest
 from sqlalchemy.dialects import postgresql
 
 from ciumb_analitica.fuentes import vistas
-from tests.conftest import PENDIENTE, RAIZ
-
-pytestmark = PENDIENTE
+from tests.conftest import RAIZ
 
 DDL_FUENTE = (RAIZ / "datos_sinteticos" / "ddl.sql").read_text(encoding="utf-8")
 
