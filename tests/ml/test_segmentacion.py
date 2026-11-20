@@ -11,9 +11,6 @@ from sklearn.preprocessing import StandardScaler
 
 from ciumb_analitica.ml import segmentacion
 from ciumb_analitica.motor.resultado import MuestraInsuficiente
-from tests.conftest import PENDIENTE
-
-pytestmark = PENDIENTE
 
 COLUMNAS = ["practicas", "convenios", "consultorias"]
 

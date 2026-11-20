@@ -74,6 +74,7 @@ MUESTRA_PEQUENA = "MUESTRA_PEQUENA"
 PRONOSTICO_NO_PUBLICABLE = "PRONOSTICO_NO_PUBLICABLE"
 GRUPOS_SUPRIMIDOS = "GRUPOS_SUPRIMIDOS"
 CHI2_ESPERADO_BAJO = "CHI2_ESPERADO_BAJO"  # lo emite motor/inferencia al calcular las frecuencias esperadas
+PRONOSTICO_SIN_MEJORA = "PRONOSTICO_SIN_MEJORA"  # lo emite ml/pronostico: no mejora la línea base (D-24)
 
 # --- Umbrales (RNF-05, RNF-06, RNF-13, Tabla 21) -------------------------------------------------------------
 MIN_PERSONAS_GRUPO = 5

@@ -9,9 +9,6 @@ from scipy import stats
 
 from ciumb_analitica.ml import atipicos
 from ciumb_analitica.motor.resultado import MuestraInsuficiente
-from tests.conftest import PENDIENTE
-
-pytestmark = PENDIENTE
 
 RNG = np.random.default_rng(20261111)
 VALORES = pd.Series(np.concatenate([RNG.normal(60, 8, size=48), [5.0, 140.0]]), index=range(100, 150))

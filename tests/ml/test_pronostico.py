@@ -13,9 +13,6 @@ from statsmodels.tsa.holtwinters import ExponentialSmoothing
 
 from ciumb_analitica.ml import pronostico
 from ciumb_analitica.motor.resultado import MuestraInsuficiente
-from tests.conftest import PENDIENTE
-
-pytestmark = PENDIENTE
 
 RNG = np.random.default_rng(20261111)
 # 16 semestres (2019-1 a 2026-2) con tendencia creciente, como las prácticas de P7.
@@ -98,6 +95,7 @@ def test_si_el_modelo_no_mejora_la_linea_base_se_advierte():
     r = pronostico.pronosticar(caminata, 2, tecnica="regresion_lineal")
     assert r.mae_modelo >= r.mae_ingenuo
     assert len(r.advertencias) == 1 and "línea base" in r.advertencias[0].mensaje
+    assert r.advertencias[0].codigo == "PRONOSTICO_SIN_MEJORA"
 
 
 def test_tecnica_desconocida():
