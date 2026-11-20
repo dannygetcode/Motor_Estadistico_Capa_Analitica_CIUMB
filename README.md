@@ -48,8 +48,19 @@ uv sync                                   # dependencias
 cp .env.example .env                      # completar contraseñas y sal
 docker compose up -d db                   # PostgreSQL de desarrollo
 uv run python -m datos_sinteticos.generar # cargar datos sintéticos
-uv run pytest                             # pruebas
+uv run --env-file .env python -m ciumb_analitica.etl --historico 2019-01  # ETL a ana_ con cortes mensuales
+uv run python -m pytest                   # pruebas (en Windows, `uv run pytest` puede fallar)
 ```
+
+El servicio también corre en contenedor (WeasyPrint necesita Linux para el PDF):
+
+```bash
+docker build -t ciumb-analitica:dev .
+docker run -d -p 8000:8000 --env-file <.env con host.docker.internal> ciumb-analitica:dev
+```
+
+Las rutas (`/salud`, `/semantica`, `/informes/catalogo`, `/informes/personalizado`, `/informes`,
+`/informes/{id}/descargar`) exigen `Authorization: Bearer <SERVICIO_TOKEN>`, salvo `/salud`.
 
 El motor de base de datos del CIUMB aún no está confirmado. El código no depende de un motor concreto y en
 desarrollo se usa PostgreSQL con datos sintéticos generados a partir del modelo inferido.
@@ -59,19 +70,19 @@ desarrollo se usa PostgreSQL con datos sintéticos generados a partir del modelo
 ```
 src/ciumb_analitica/
   fuentes/           vistas de extracción sobre la base del CIUMB (solo lectura)
-  etl/               extracción, seudonimización, reglas de calidad y carga
+  etl/               extracción, seudonimización, reglas de calidad, carga y programación nocturna
   dw/                esquema ana_ (dimensiones, hechos, agregados)
   semantica/         métricas, dimensiones y compatibilidades publicadas
   spec/              modelos de ciumb.spec/1.0 y validador
   compilador/        spec -> SQL parametrizado
-  motor/             estadística descriptiva, series de tiempo, inferencia
+  motor/             estadística descriptiva, series de tiempo, inferencia y método -> secciones
   ml/                pronóstico, atípicos, segmentación
   graficos/          tipos de gráfico y recomendador
   contrato/          contrato 2.0.0 y filtro de datos personales
   validador_cifras/  cotejo de cifras del texto y plantilla sin IA
-  exportacion/       PDF, DOCX, XLSX, HTML, CSV
-  trazabilidad/      esquema rpt_ (solicitudes, resultados, validaciones)
-  api/               rutas FastAPI
+  exportacion/       PDF, DOCX, XLSX, HTML, CSV e identidad visual UMB
+  trazabilidad/      esquema rpt_ y su escritura (solicitudes, resultados, validaciones, caché)
+  api/               orquestación del flujo (flujo.py), configuración (servicio.py) y rutas FastAPI
 schemas/             JSON Schema, ejemplos y fixtures
 datos_sinteticos/    DDL del modelo inferido y generador con semilla fija
 sql/                 DDL de ana_ y rpt_ para PostgreSQL

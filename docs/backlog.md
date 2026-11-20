@@ -15,17 +15,17 @@ Estados: [x] hecho · [~] en curso · [ ] pendiente. El detalle de cada historia
 - [ ] Las otras 10 plantillas base (falta la lista de las 18 priorizadas).
 - [x] Validador de especificación (7 pasos) y revisión posterior a los datos (supresión < 5, muestra, gráfico).
 - [x] Compilador de spec a SQL parametrizado con huella determinista (razones, agregados, instantáneas, alcance). SQL de P1–P9 verificado con EXPLAIN en PostgreSQL 16.
-- [~] Vistas de extracción de `fuentes/` sobre el esquema `ciumb`. Firmas y pruebas xfail listas.
-- [~] ETL: extracción incremental, seudonimización, reglas de calidad, carga de dimensiones y hechos. Seudonimización hecha; firmas y pruebas xfail de calidad y carga incremental; falta la integración.
-- [~] Motor estadístico (descriptiva, series, inferencia; Tabla 8). Firmas y pruebas xfail contra SciPy listas.
-- [~] Gráficos (6 tipos) y recomendador (Tabla 21). Recomendador hecho (validador de specs); firmas y pruebas xfail del generador.
+- [x] Vistas de extracción de `fuentes/` sobre el esquema `ciumb`: lista blanca de columnas por entidad (`metadatos_fuente`), sin campos sensibles.
+- [x] ETL: extracción incremental (fecha de modificación o huella), seudonimización, reglas de calidad, carga de dimensiones (SCD 2), hechos, agregados y cortes históricos; programación con APScheduler (`python -m ciumb_analitica.etl`). Integración probada en SQLite y en PostgreSQL 16 (Docker), sin errores (D-25, D-29, D-32).
+- [x] Motor estadístico (descriptiva, series, inferencia; Tabla 8), contrastado con NumPy y SciPy, y despacho método -> secciones del contrato (`motor/analisis.py`, D-30).
+- [x] Gráficos (6 tipos, Matplotlib + Plotly, deterministas) y recomendador (Tabla 21). Identidad visual provisional (D-27).
 
 ## Sprint 3 (30 nov–11 dic): ML, contrato, validador, exportación
-- [~] ML: pronóstico, atípicos, segmentación. Firmas y pruebas xfail contra statsmodels y scikit-learn listas.
-- [~] Empaquetador del contrato y filtro de PII. Filtro de PII hecho; firmas y pruebas xfail del empaquetador.
+- [x] ML: pronóstico (Holt, regresión; validación de origen móvil), atípicos (RIC, Z), segmentación (k-medias con silueta), contra statsmodels y scikit-learn.
+- [x] Empaquetador del contrato y filtro de PII.
 - [x] Validador de cifras (6 pasos) con regeneraciones y plantilla sin IA por defecto (adelantado en la sesión 1).
-- [~] Exportación PDF, DOCX, XLSX, HTML y CSV. Firmas y pruebas xfail listas.
-- [ ] Orquestación del flujo, rutas de la API y trazabilidad en `rpt_` (sin firmas todavía).
+- [x] Exportación PDF, DOCX, XLSX, HTML y CSV con identidad UMB. PDF probado en Linux (Docker) y por HTTP; en Windows la API responde 503 para PDF (D-32).
+- [x] Orquestación del flujo (`api/flujo.py`, capa de IA como puerto `Redactor`), rutas de la API con token de servicio, trazabilidad en `rpt_` y caché de narrativa por huella (D-28). P1–P10 de punta a punta en `tests/api/test_flujo.py` (modo degradado y con IA simulada).
 
 ## Sprint 4 (14–19 dic): evaluación
-- [ ] Pruebas de aceptación P1–P10 y métricas de los objetivos (Tabla 2).
+- [~] Pruebas de aceptación P1–P10: el resultado, el gráfico final y los avisos de la Tabla 22 ya se comprueban de punta a punta (`tests/api/test_flujo.py`). También corren por HTTP contra el servicio en Docker y PostgreSQL. Faltan las métricas de los objetivos (Tabla 2) y la IA real.

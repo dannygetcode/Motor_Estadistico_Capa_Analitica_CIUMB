@@ -219,6 +219,129 @@ D-09 a D-17 se resolvieron con la opción mínima. La lista original se conserva
   `ResultadoFinal.intentos`.
 - Formato de la narrativa (BORRADOR, lo define la capa de IA): `{"secciones": [{"id", "texto"}]}`.
 
+## Decisiones de la sesión 2 (2026-11-19): motor, ML, gráficos, contrato, ETL, exportación y API
+
+### D-24 · Pruebas y avisos del motor y de ML · APROBADA por Daniel (2026-11-19)
+- `tests/motor/test_inferencia.py` comparaba `obtenido.significativo is (esperado.pvalue < 0.05)`. El lado derecho
+  es `numpy.bool_` y `True is numpy.True_` es falso aunque el valor coincida. Se cambió `is` por `==` en las dos
+  líneas (no cambia lo que la prueba exige). La alternativa —devolver `numpy.bool_`— rompía el tipo `bool` del
+  resultado y su serialización a JSON. **Única prueba existente modificada en esta sesión** (además de quitar las
+  marcas `xfail`).
+- El pronóstico que no mejora a la línea base ingenua lleva el aviso `PRONOSTICO_SIN_MEJORA`. Con la
+  aprobación, el código vive en `spec/resultado.py` con los demás avisos (constante nueva; nada existente cambió)
+  y `ml/pronostico.py` lo reexporta.
+
+### D-25 · Cómo carga cada tabla el ETL (aplica D-17 y D-18)
+- Instantáneas periódicas (`hecho_proyecto`, `hecho_convenio`, `hecho_macroproyecto`): modo `completa` por corte
+  (se borra el corte y se vuelve a insertar). Una foto del mes necesita todas las filas, cambien o no.
+- `hecho_practica` (acumulativa, la vista tiene `fecha_modificacion`): lee solo las filas con `fecha_modificacion`
+  posterior al inicio de la última carga exitosa de esa tabla (`etl_ejecucion`). Fechas sin zona horaria: la
+  fuente y el servicio deben usar la misma hora local.
+- `hecho_hito` y `hecho_consultoria` (sin fecha de modificación): huella de la fila **del hecho ya armado**, no
+  de la fila de origen. Así un cambio en una tabla hija (una factura nueva, un consultor más) también se detecta.
+- `hecho_acceso_diario`: se recalcula completo hasta el corte (los accesos no cambian, solo se agregan).
+- `agg_facturacion_mes` se carga en `cargar_hechos` y no en `recalcular_agregados`: sale de
+  `factura_consultoria`, que no tiene hecho propio en `ana_` y no se puede recalcular sin la fuente.
+- `dim_estado` se llena con los estados **observados** en la fuente por módulo (`investigacion`, `practicas`,
+  `convenios`…, como en las pruebas del compilador), incluidos los que están fuera del catálogo: el registro se
+  carga marcado, no se descarta. Un estado nulo se carga como `sin_estado`. `es_final` sale de
+  `ESTADOS_FINALES` en `etl/carga.py` (PROVISIONAL hasta el catálogo oficial).
+- `dim_persona_rol`: una fila por (seudónimo, rol, tipo de participación): tutor académico, consultor (líder o
+  no), coordinador de macroproyecto y usuario con su rol (para los accesos).
+- SCD tipo 2 de `dim_macroproyecto`: la primera versión es vigente desde `fecha_inicio`; un cambio cierra la
+  vigente el día anterior a la carga y abre otra desde el día de la carga. Repetir la carga el mismo día corrige
+  la versión abierta ese día en lugar de abrir otra. Un cambio solo de nombre se corrige en el lugar (SCD 1).
+- Cada tabla se escribe en un punto de guardado: si falla, se deshace solo esa tabla, el error queda en
+  `etl_ejecucion` y las tablas que dependen de ella (por clave foránea) se omiten con el motivo.
+- `cargar_cortes_historicos` no escribe en `etl_marca_calidad`: un registro defectuoso aparece en cada corte y
+  registrarlo 94 veces inflaba INF-TRA-08 (en PostgreSQL se vio: 384 marcas para 10 proyectos). Los hechos de cada
+  corte sí llevan `marca_calidad`; el conteo sale de la ejecución nocturna.
+- El catálogo de estados del servicio vive en `etl/programacion.py` (copia de `datos_sinteticos`, D-04); una
+  prueba exige que coincidan mientras no llegue el oficial.
+
+### D-26 · Exportación: filtro de PII, formato de cifras y CSV
+- El filtro de PII revisa título, anexo y tablas con la lista completa. En la narrativa solo busca correos y NIT:
+  sus números ya pasaron el validador de cifras y un total como «1.250.000» tiene la forma del patrón de
+  documento. Los SHA-256 (huellas) se excluyen antes de revisar, como `huella_datos` en el contrato.
+- Una columna de tabla se muestra con los decimales que necesita su valor más preciso (365,0 y 412,6). Las
+  columnas de tiempo se combinan en una etiqueta de periodo («2026-T1») para que un año no salga como «2.026».
+- CSV: UTF-8 con BOM, `;`, coma decimal y sin punto de miles. HTML: autocontenido, gráficos en PNG base64 (no se
+  incrusta plotly.js; la figura Plotly queda en `Grafico.plotly` para el chatbot).
+
+### D-27 · Identidad visual (PROVISIONAL)
+- `exportacion/identidad.py` concentra colores y tipografías: rojo institucional para la marca y azul oscuro para
+  los datos (4.5). Los valores hexadecimales son provisionales hasta recibir el manual de marca de la UMB.
+
+### D-28 · Orquestación y API (BORRADOR hasta cerrar la interfaz con la capa de IA)
+- La capa de IA entra como un puerto (`api.flujo.Redactor`: `redactar(contrato)` y `regenerar(contrato,
+  anterior, discrepancias)`). Sin redactor, o si falla, el informe sale con la plantilla (RF-11). El cliente HTTP
+  hacia la capa de Laura se escribe cuando ella confirme los puntos 7 y 9 de `docs/interfaz_capa_ia.md`.
+- Rutas: `GET /salud` (sin token), `GET /semantica`, `GET /informes/catalogo?rol=`, `POST /informes/personalizado`
+  (`{spec, prompt?, formatos?, id_usuario?}`), `POST /informes` (`{codigo, alcance, periodo?, formatos?}`),
+  `GET /informes/{id}/descargar?formato=`. Todas menos `/salud` exigen `Authorization: Bearer <SERVICIO_TOKEN>`;
+  sin token configurado responden 503. Una spec no válida responde **200** con `estado` y `problemas` (para que
+  la capa de IA repregunte); 422 queda para peticiones mal formadas.
+- `rpt_especificacion.spec_json` guarda la spec **tal como llegó**; `huella_spec`, la de la resuelta. Para
+  reproducir (RNF-11) se vuelve a validar con la fecha de la solicitud y se exige la misma huella; si la capa
+  semántica cambió, la descarga responde 409 en lugar de entregar otro informe.
+- Caché de RF-13: `rpt_narrativa_cache` guarda solo textos de la IA ya aprobados. La llave es la huella del
+  contrato **sin** `especificacion.id` (que cambia en cada solicitud): misma spec y mismos datos, mismo texto, sin
+  llamar a la IA.
+- `rpt_validacion` se escribe con `ResultadoFinal.registro()` (una fila por informe, en el primer formato).
+- Las advertencias de la validación y de la revisión de datos van a la primera sección del contrato.
+- Conexiones: `DATABASE_URL_LECTURA` (solo `ana_`, marcada de solo lectura en PostgreSQL) y `DATABASE_URL_RPT`
+  (escritura en `rpt_`). Falta crear en `sql/` un rol con escritura solo en `rpt_` (hoy, en desarrollo, el admin).
+
+### D-29 · Carga histórica de cortes mensuales
+- `carga.cargar_cortes_historicos` (y `python -m ciumb_analitica.etl --historico AAAA-MM`) construye un corte por
+  fin de mes para las instantáneas periódicas. Sin ella, `ana_` solo tiene el último mes cerrado y P1, P3, P4 y
+  P9 no tienen serie.
+- Limitación: la fuente no guarda la historia de estados, así que un corte pasado usa el estado ACTUAL de cada
+  registro (los que existían a esa fecha sí se filtran por creación, inicio o firma). Las medidas que dependen
+  de la fecha (hitos atrasados, días para vencer) sí se calculan al corte.
+
+### D-30 · Del método de la spec a las secciones del contrato (`motor/analisis.py`)
+- Cada sección trae todas las cifras que el texto puede citar: valores por grupo, total, máximo, número de grupos
+  y, según el método, estadístico con valor p y n, grados de libertad, intervalos, MAE del modelo y de la línea
+  base, tamaños y centroides. Los parámetros (alfa, nivel de confianza, k, horizonte) van en `extra`.
+- Total de una métrica: aditiva = suma; razón = desde `__num`/`__den`; **semiaditiva con tiempo = el último corte**
+  (nunca la suma de los cortes). La variación interanual de una semiaditiva compara el último corte con el mismo
+  corte del año anterior. Un corte que falta queda vacío, no en 0.
+- Una dimensión con `viaja_a_ia = False` (empresa, macroproyecto) no aparece en `grupo`: se publican los totales
+  con una advertencia, y el detalle queda en las tablas del informe.
+- Segmentación: un grupo con menos de 5 unidades publica su tamaño pero no su centroide (sería la actividad de
+  esas empresas concretas; misma regla que la supresión de grupos < 5).
+- Más de 60 grupos: se publican los 60 mayores con advertencia (el contrato admite 200 indicadores por sección).
+- Si los datos reales no admiten el método (la dimensión no tiene dos grupos, el chi-cuadrado queda en menos de
+  2 × 2, la serie no alcanza), la solicitud vuelve como `corregible` con `METODO_NO_APLICABLE` para repreguntar.
+
+### D-31 · Observaciones para revisar con Daniel (no se cambió nada cerrado)
+- P8: `revisar_datos` suprime las empresas con menos de cinco estudiantes en la consulta de prácticas antes de
+  unir las tres consultas, así que muchas empresas entran a k-medias con 0 prácticas. Con los datos sintéticos la
+  silueta elige k = 10 (el máximo) con grupos diminutos. Es correcto frente a la regla de privacidad, pero
+  conviene decidir si la supresión debe aplicarse a la entrada de la segmentación o solo a lo que se publica.
+- El estado de `rpt_especificacion` queda `valida` aunque luego el compilador o el motor rechacen la spec (la
+  solicitud sí queda `rechazada`). Si se quiere un solo estado, hay que tocar el esquema `rpt_` (cerrado).
+- Una excepción inesperada durante la exportación deshace la transacción de `rpt_`, así que esa solicitud no queda
+  registrada. Registrar errores exige una segunda transacción; queda pendiente.
+
+### D-32 · Entorno Docker de desarrollo y despliegue del servicio (2026-11-19)
+- `Dockerfile`: Python 3.12 slim + uv 0.12.17 + Pango y HarfBuzz (WeasyPrint) + fuentes DejaVu; corre Uvicorn
+  con un usuario sin privilegios. `.dockerignore` deja fuera `.env`, `.venv`, `.git` y `docs`.
+- El contenedor `ciumb_db` se recreó sobre el volumen existente `motor_estadistico_capa_analitica_ciumb_datos_db`
+  (conservaba la fuente `ciumb`); `ana_` y `rpt_` se aplicaron con `sql/ana_rpt_postgresql.sql`.
+- `ciumb_lector` recibió LOGIN con la contraseña de `DATABASE_URL_LECTURA` (lo que indica el DDL, fuera de git):
+  el servicio lee `ana_` con ese rol de solo lectura (invariante 3). En desarrollo, `DATABASE_URL_RPT`,
+  `DATABASE_URL_FUENTE` y `DATABASE_URL_ANA_ESCRITURA` usan el admin (falta el rol de escritura en `rpt_`, D-28).
+- En `.env` se generaron al azar `SAL_SEUDONIMIZACION` y `SERVICIO_TOKEN` (no están en git).
+- Si el servidor no puede producir un formato (PDF sin Pango, p. ej. en Windows), la API responde 503 con el
+  motivo (`FormatoNoDisponible`) en lugar de 500.
+- Resultado: ETL sobre PostgreSQL sin errores (94 cortes, marcas iguales a los defectos sembrados); P1–P10 por
+  HTTP contra el contenedor del servicio con los resultados de la Tabla 22; 9 PDF generados y descargados; suite
+  completa en Linux: 701 en verde, sin omitidas.
+- En Windows, la primera segmentación de un proceso tardó 21 s (arranque de scikit-learn/OpenBLAS); en Linux,
+  P8 completo tarda 1,9 s.
+
 ## Lista original de contradicciones y huecos (resueltos arriba)
 1. **dim_tiempo:** la Figura 7 y la Tabla 16 usan `día`/`año`; la Figura 8 usa `anio` y agrega `nombre_mes`.
    Convención del repo (sin tildes): `anio`, `dia`.
