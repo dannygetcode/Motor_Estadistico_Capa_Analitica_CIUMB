@@ -10,9 +10,6 @@ from scipy import stats
 from ciumb_analitica.motor import inferencia
 from ciumb_analitica.motor.resultado import MuestraInsuficiente
 from ciumb_analitica.spec import resultado as r
-from tests.conftest import PENDIENTE
-
-pytestmark = PENDIENTE
 
 RNG = np.random.default_rng(20261111)
 N_CONSULTORES = pd.Series(RNG.integers(1, 7, size=86).astype(float))
@@ -26,7 +23,7 @@ def test_correlacion_contra_scipy(metodo, referencia):
     assert obtenido.metodo == metodo and obtenido.n == 86
     assert obtenido.estadistico == pytest.approx(esperado.statistic)
     assert obtenido.valor_p == pytest.approx(esperado.pvalue)
-    assert obtenido.significativo is (esperado.pvalue < 0.05)
+    assert obtenido.significativo == (esperado.pvalue < 0.05)
     assert obtenido.advertencias == ()
 
 
@@ -74,7 +71,7 @@ def test_chi_cuadrado_contra_scipy():
     assert obtenido.estadistico == pytest.approx(esperado.statistic)
     assert obtenido.valor_p == pytest.approx(esperado.pvalue)
     assert (obtenido.grados_libertad, obtenido.n) == (2, 280)
-    assert obtenido.significativo is (esperado.pvalue < 0.05)
+    assert obtenido.significativo == (esperado.pvalue < 0.05)
     assert obtenido.advertencias == ()  # todas las esperadas son >= 5
 
 

@@ -7,9 +7,6 @@ import pytest
 
 from ciumb_analitica.motor import series
 from ciumb_analitica.spec.modelos import Granularidad
-from tests.conftest import PENDIENTE
-
-pytestmark = PENDIENTE
 
 
 def _mensual() -> pd.DataFrame:

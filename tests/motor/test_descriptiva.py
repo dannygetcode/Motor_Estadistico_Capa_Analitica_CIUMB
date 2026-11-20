@@ -9,9 +9,6 @@ from scipy import stats
 
 from ciumb_analitica.motor import descriptiva
 from ciumb_analitica.motor.resultado import MuestraInsuficiente
-from tests.conftest import PENDIENTE
-
-pytestmark = PENDIENTE
 
 RNG = np.random.default_rng(20261111)
 VALORES = pd.Series(np.round(RNG.gamma(shape=2.0, scale=30.0, size=57), 2))
